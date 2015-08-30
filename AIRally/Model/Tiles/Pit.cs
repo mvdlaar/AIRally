@@ -5,6 +5,11 @@ namespace AIRally.Model.Tiles
 {
     public class Pit: Tile
     {
+        public Pit(int x, int y) : base(x, y)
+        {
+            
+        }
+
         public override string ToString()
         {
             return "P";
@@ -21,6 +26,16 @@ namespace AIRally.Model.Tiles
                 myStream.Dispose();
             }
             return result;
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return 0;
+        }
+
+        public override bool HasRepair()
+        {
+            return false;
         }
     }
 }

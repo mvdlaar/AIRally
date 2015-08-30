@@ -5,22 +5,22 @@ namespace AIRally.Model.Tiles
 {
     public class Gear: TileDecorator
     {
-        public GearDirection Direction { get; }
+        public TurnDirection Direction { get; }
 
-        public Gear(Tile baseTile, GearDirection direction): base(baseTile)
+        public Gear(Tile baseTile, TurnDirection direction, int x, int y) : base(baseTile, x, y)
         {
             this.Direction = direction;
         }
 
         public override string ToString()
         {
-            if (Direction == GearDirection.Right)
+            if (Direction == TurnDirection.Right)
             {
-                return baseTile + "GR";
+                return BaseTile + "GR";
             }
             else
             {
-                return baseTile + "GL";
+                return BaseTile + "GL";
             }
         }
 
@@ -28,14 +28,23 @@ namespace AIRally.Model.Tiles
         {
             switch (Direction)
             {
-                case GearDirection.Right:
+                case TurnDirection.Right:
                     return DrawOn("GearRight");
                     break;
-                case GearDirection.Left:
+                case TurnDirection.Left:
                     return DrawOn("GearLeft");
                     break;
             }
-            return baseTile.Draw();
+            return BaseTile.Draw();
+        }
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
         }
     }
 }

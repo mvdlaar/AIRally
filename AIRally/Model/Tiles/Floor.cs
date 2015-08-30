@@ -6,6 +6,11 @@ namespace AIRally.Model.Tiles
 {
     public class Floor : Tile
     {
+        public Floor(int x, int y) : base(x, y)
+        {
+            
+        }
+
         public override Image Draw()
         {
             Image result = null;
@@ -22,6 +27,16 @@ namespace AIRally.Model.Tiles
         public override string ToString()
         {
             return "F";
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return 0;
+        }
+
+        public override bool HasRepair()
+        {
+            return false;
         }
     }
 }

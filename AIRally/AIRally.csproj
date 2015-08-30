@@ -46,10 +46,9 @@
     <Compile Include="Model\Decks\ProgramCard.cs" />
     <Compile Include="Model\Decks\ProgramCardAction.cs" />
     <Compile Include="Model\Decks\ProgramDeck.cs" />
-    <Compile Include="Model\Tiles\ConveyorTurn.cs" />
     <Compile Include="Model\Tiles\Flag.cs" />
     <Compile Include="Model\Tiles\Gear.cs" />
-    <Compile Include="Model\Tiles\GearDirection.cs" />
+    <Compile Include="Model\Tiles\TurnDirection.cs" />
     <Compile Include="Model\Tiles\Pit.cs" />
     <Compile Include="Model\Tiles\Repair.cs" />
     <Compile Include="Model\Tiles\SpawnPoint.cs" />

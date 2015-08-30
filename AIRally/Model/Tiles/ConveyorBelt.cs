@@ -6,9 +6,9 @@ namespace AIRally.Model.Tiles
     public class ConveyorBelt: TileDecorator
     {
         public ConveyorDirection Direction { get; }
-        public ConveyorTurn Turn { get; }
+        public TurnDirection Turn { get; }
 
-        public ConveyorBelt(Tile baseTile, ConveyorDirection direction, ConveyorTurn turn) : base(baseTile)
+        public ConveyorBelt(Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(baseTile, x, y)
         {
             this.Direction = direction;
             this.Turn = turn;
@@ -35,16 +35,16 @@ namespace AIRally.Model.Tiles
 
             switch (Turn)
             {
-                case ConveyorTurn.None:
+                case TurnDirection.None:
                     result.Append('N');
                     break;
-                case ConveyorTurn.Left:
+                case TurnDirection.Left:
                     result.Append('L');
                     break;
-                case ConveyorTurn.Right:
+                case TurnDirection.Right:
                     result.Append('R');
                     break;
-                case ConveyorTurn.Both:
+                case TurnDirection.Both:
                     result.Append('B');
                     break;
             }
@@ -53,12 +53,22 @@ namespace AIRally.Model.Tiles
 
         public override string ToString()
         {
-            return baseTile + Postfix("C");
+            return BaseTile + Postfix("C");
         }
 
         public override Image Draw()
         {
             return DrawOn(Postfix("CBelt"));
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
         }
     }
 }

@@ -6,19 +6,29 @@ namespace AIRally.Model.Tiles
     {
         public int Number { get; }
 
-        public SpawnPoint(Tile baseTile, int number): base(baseTile)
+        public SpawnPoint(Tile baseTile, int number, int x, int y) : base(baseTile, x, y)
         {
             this.Number = number;
         }
 
         public override string ToString()
         {
-            return baseTile + "S" + Number;
+            return BaseTile + "S" + Number;
         }
 
         public override Image Draw()
         {
             return DrawOn("Spawn" + Number);
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return Number;
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
         }
     }
 }

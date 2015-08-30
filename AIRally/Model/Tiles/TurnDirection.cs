@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace AIRally.Model.Tiles
 {
-    public enum ConveyorTurn {None, Right, Left, Both}
+    public enum TurnDirection {None, Right, Left, Both}
 }

@@ -14,7 +14,6 @@ namespace AIRallyPlayer
         {
             InitializeComponent();
             airally = new AIRally.Model.AIRally(boardLocation);
-
             
             AI ai1 = new AI(1);
             

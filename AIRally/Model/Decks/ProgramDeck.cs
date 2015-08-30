@@ -12,7 +12,6 @@ namespace AIRally.Model.Decks
         public ProgramDeck()
         {
             InitDeck();
-            Shuffle();
         }
 
         public void InitDeck()

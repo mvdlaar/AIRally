@@ -8,14 +8,14 @@ namespace AIRally.Model.Tiles
     {
         public List<int> Turns { get; }
 
-        public Pusher(Tile baseTile, List<int> turns) : base(baseTile)
+        public Pusher(Tile baseTile, List<int> turns, int x, int y) : base(baseTile, x, y)
         {
             this.Turns = turns;
         }
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
-            result.Append(baseTile);
+            result.Append(BaseTile);
             result.Append('P');
             foreach (int turn in Turns)
             {
@@ -26,7 +26,17 @@ namespace AIRally.Model.Tiles
 
         public override Image Draw()
         {
-            return baseTile.Draw();
+            return BaseTile.Draw();
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
         }
     }
 }

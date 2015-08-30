@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AIRally.Model.Tiles
 {
@@ -10,25 +11,34 @@ namespace AIRally.Model.Tiles
 
         public abstract Image Draw();
 
-        public static Tile MakeTile(string tileString)
+        public int X { get; }
+        public int Y { get; }
+
+        public Tile(int X, int Y)
+        {
+            this.X = X;
+            this.Y = Y;
+        }
+
+        public static Tile MakeTile(string tileString, int x, int y)
         {
             Tile result;
 
-            // the first character is the concrete Tile
-
+            // the first character is the Concrete Tile
             switch (tileString[0])
             {
                 case 'F':
-                    result = new Floor();
+                    result = new Floor(x, y);
                     break;
                 case 'P':
-                    result = new Pit();
+                    result = new Pit(x, y);
                     break;
                 default:
                     return null;
                     break;
             }
             
+            //All following characters are Decorator Tiles
             var i = 1;
             while (i < tileString.Length)
             {
@@ -58,16 +68,16 @@ namespace AIRally.Model.Tiles
                         switch (tileString[i])
                         {
                             case 'N':
-                                result = new ConveyorBelt(result, conveyorDirection, ConveyorTurn.None);
+                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.None, x, y);
                                 break;
                             case 'L':
-                                result = new ConveyorBelt(result, conveyorDirection, ConveyorTurn.Left);
+                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Left, x, y);
                                 break;
                             case 'R':
-                                result = new ConveyorBelt(result, conveyorDirection, ConveyorTurn.Right);
+                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Right, x, y);
                                 break;
                             case 'B':
-                                result = new ConveyorBelt(result, conveyorDirection, ConveyorTurn.Both);
+                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Both, x, y);
                                 break;
                         }
                         break;
@@ -92,16 +102,16 @@ namespace AIRally.Model.Tiles
                         switch (tileString[i])
                         {
                             case 'N':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, ConveyorTurn.None);
+                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.None, x, y);
                                 break;
                             case 'L':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, ConveyorTurn.Left);
+                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Left, x, y);
                                 break;
                             case 'R':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, ConveyorTurn.Right);
+                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Right, x, y);
                                 break;
                             case 'B':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, ConveyorTurn.Both);
+                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Both, x, y);
                                 break;
                         }
                         break;
@@ -110,16 +120,16 @@ namespace AIRally.Model.Tiles
                         number = Convert.ToInt32(tileString[i].ToString());
                         if (number >= 1 && number <= 8)
                         {
-                            result = new Flag(result, number);
+                            result = new Flag(result, number, x, y);
                         }
                         break;
                     case 'G': // Gear
                         i++;
-                        result = tileString[i] == 'R' ? new Gear(result, GearDirection.Right) : new Gear(result, GearDirection.Left);
+                        result = tileString[i] == 'R' ? new Gear(result, TurnDirection.Right, x, y) : new Gear(result, TurnDirection.Left, x, y);
                         break;
                     case 'L': // Laser
                         i++;
-                        result = new Laser(result);
+                        result = new Laser(result, x, y);
                         break;
                     case 'P': // Pusher
                         List<int> turns = new List<int>();
@@ -128,17 +138,17 @@ namespace AIRally.Model.Tiles
                             i++;
                             turns.Add(Convert.ToInt32(tileString[i].ToString()));
                         }
-                        result = new Pusher(result, turns);
+                        result = new Pusher(result, turns, x, y);
                         break;
                     case 'R': // Repair
-                        result = new Repair(result);
+                        result = new Repair(result, x, y);
                         break;
                     case 'S': // Spawnpoint
                         i++;
                         number = Convert.ToInt32(tileString[i].ToString());
                         if (number >= 1 && number <= 8)
                         {
-                            result = new SpawnPoint(result, number);
+                            result = new SpawnPoint(result, number, x, y);
                         }
                         break;
                     case 'W': // Wall
@@ -146,24 +156,26 @@ namespace AIRally.Model.Tiles
                         switch (tileString[i])
                         {
                             case 'T':
-                                result = new Wall(result, WallDirection.Top);
+                                result = new Wall(result, WallDirection.Top, x, y);
                                 break;
                             case 'L':
-                                result = new Wall(result, WallDirection.Left);
+                                result = new Wall(result, WallDirection.Left, x, y);
                                 break;
                             case 'B':
-                                result = new Wall(result, WallDirection.Bottom);
+                                result = new Wall(result, WallDirection.Bottom, x, y);
                                 break;
                             case 'R':
-                                result = new Wall(result, WallDirection.Right);
+                                result = new Wall(result, WallDirection.Right, x, y);
                                 break;
                         }
                         break;
                 }
                 i++;
             }
-
             return result;
         }
+
+        public abstract int HasSpawnPoint();
+        public abstract bool HasRepair();
     }
 }

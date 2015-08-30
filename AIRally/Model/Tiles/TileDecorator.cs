@@ -1,21 +1,22 @@
 ﻿using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AIRally.Model.Tiles
 {
     public abstract class TileDecorator: Tile
     {
-        protected Tile baseTile = null;
+        protected Tile BaseTile = null;
 
-        protected TileDecorator(Tile baseTile)
+        protected TileDecorator(Tile baseTile, int x, int y): base(x, y)
         {
-            this.baseTile = baseTile;
+            this.BaseTile = baseTile;
         }
 
         protected Image DrawOn(string resourceName)
         {
-            Image imageTile = baseTile.Draw();
+            Image imageTile = BaseTile.Draw();
             Graphics g = Graphics.FromImage(imageTile);
             Assembly myAssembly = Assembly.GetExecutingAssembly();
             Stream myStream = myAssembly.GetManifestResourceStream("AIRally.EMF." + resourceName + ".EMF");

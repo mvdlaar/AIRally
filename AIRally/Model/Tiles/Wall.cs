@@ -8,7 +8,7 @@ namespace AIRally.Model.Tiles
     {
         public WallDirection Direction { get; }
 
-        public Wall(Tile baseTile, WallDirection direction): base(baseTile)
+        public Wall(Tile baseTile, WallDirection direction, int x, int y) : base(baseTile, x, y)
         {
             this.Direction = direction;
         }
@@ -18,19 +18,19 @@ namespace AIRally.Model.Tiles
             switch (Direction)
             {
                 case WallDirection.Top:
-                    return baseTile.ToString() + "WT";
+                    return BaseTile + "WT";
                     break;
                 case WallDirection.Right:
-                    return baseTile.ToString() + "WR";
+                    return BaseTile + "WR";
                     break;
                 case WallDirection.Bottom:
-                    return baseTile.ToString() + "WB";
+                    return BaseTile + "WB";
                     break;
                 case WallDirection.Left:
-                    return baseTile.ToString() + "WL";
+                    return BaseTile + "WL";
                     break;
                 default:
-                    return baseTile.ToString();
+                    return BaseTile.ToString();
                     break;
             }
         }
@@ -52,7 +52,17 @@ namespace AIRally.Model.Tiles
                     return DrawOn("WallRight");
                     break;
             }
-            return baseTile.Draw();
+            return BaseTile.Draw();
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
         }
     }
 }

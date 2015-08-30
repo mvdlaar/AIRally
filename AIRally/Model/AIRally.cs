@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using AIRally.Model.Boards;
+using AIRally.Model.Decks;
+using AIRally.Model.Tiles;
 
 namespace AIRally.Model
 {
@@ -8,14 +10,18 @@ namespace AIRally.Model
         private string boardLocation;
         public  Board Board { get; }
         private List<AI> ais;
+        private ProgramDeck programDeck;
 
         public AIRally(string boardLocation)
         {
             this.boardLocation = boardLocation;
             Board = new Board(boardLocation);
+            programDeck = new ProgramDeck();
+
+            Setup();
         }
 
-        void Setup()
+        public void Setup()
         {
             // Choose AI
                 // Set Archive Marker
@@ -24,15 +30,17 @@ namespace AIRally.Model
                 // Each AI gets 3 Life tokens
             // Shuffle decks
                 // Shuffle Program Deck
+            programDeck.Shuffle();
             // Determine First Player
-                // First AI on Dock 1
-                // Second AI on Dock 2
-                // Third AI on Dock 3
-                // Fourth AI on Dock 4
-                // Fifth AI on Dock 5
-                // Sixth AI on Dock 6
-                // Seventh AI on Dock 7
-                // Eight AI on Dock 8
+
+            // Place AIs on Board
+            int i = 0;
+            while (i < ais.Count)
+            {
+                ais[i].X = Board.SpawnPoints[i].X;
+                ais[i].Y = Board.SpawnPoints[i].Y;
+                i++;
+            }
         }
 
 
