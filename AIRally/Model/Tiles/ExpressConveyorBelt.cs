@@ -11,8 +11,8 @@ namespace AIRally.Model.Tiles
 
         public ExpressConveyorBelt(Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(baseTile, x, y)
         {
-            this.Direction = direction;
-            this.Turn = turn;
+            Direction = direction;
+            Turn = turn;
         }
 
         private string Postfix(string Prefix)
@@ -59,16 +59,6 @@ namespace AIRally.Model.Tiles
         public override Image Draw()
         {
             return DrawOn(Postfix("EBelt"));
-        }
-
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
         }
     }
 }

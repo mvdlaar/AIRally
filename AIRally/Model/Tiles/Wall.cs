@@ -10,7 +10,7 @@ namespace AIRally.Model.Tiles
 
         public Wall(Tile baseTile, WallDirection direction, int x, int y) : base(baseTile, x, y)
         {
-            this.Direction = direction;
+            Direction = direction;
         }
 
         public override string ToString()
@@ -19,19 +19,14 @@ namespace AIRally.Model.Tiles
             {
                 case WallDirection.Top:
                     return BaseTile + "WT";
-                    break;
                 case WallDirection.Right:
                     return BaseTile + "WR";
-                    break;
                 case WallDirection.Bottom:
                     return BaseTile + "WB";
-                    break;
                 case WallDirection.Left:
                     return BaseTile + "WL";
-                    break;
                 default:
                     return BaseTile.ToString();
-                    break;
             }
         }
 
@@ -41,28 +36,26 @@ namespace AIRally.Model.Tiles
             {
                 case WallDirection.Top:
                     return DrawOn("WallUp");
-                    break;
                 case WallDirection.Bottom:
                     return DrawOn("WallDown");
-                    break;
                 case WallDirection.Left:
                     return DrawOn("WallLeft");
-                    break;
                 case WallDirection.Right:
                     return DrawOn("WallRight");
-                    break;
             }
             return BaseTile.Draw();
         }
 
-        public override int HasSpawnPoint()
+        public override WallDirection[] HasWalls()
         {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
+            var old = base.HasWalls();
+            var result = new WallDirection[old.Length + 1];
+            for (var i = 0; i < old.Length; i++)
+            {
+                result[i] = old[i];
+            }
+            result[result.Length - 1] = Direction;
+            return result;
         }
     }
 }

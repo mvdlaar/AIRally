@@ -21,11 +21,6 @@ namespace AIRally.Model.Tiles
             return DrawOn("Flag" + Number);
         }
 
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
-        }
-
         public override bool HasRepair()
         {
             return true;

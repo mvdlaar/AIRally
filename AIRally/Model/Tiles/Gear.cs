@@ -37,14 +37,5 @@ namespace AIRally.Model.Tiles
             }
             return BaseTile.Draw();
         }
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
-        }
     }
 }

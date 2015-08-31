@@ -25,10 +25,5 @@ namespace AIRally.Model.Tiles
         {
             return Number;
         }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
-        }
     }
 }

@@ -10,7 +10,7 @@ namespace AIRally.Model.Tiles
 
         public Pusher(Tile baseTile, List<int> turns, int x, int y) : base(baseTile, x, y)
         {
-            this.Turns = turns;
+            Turns = turns;
         }
         public override string ToString()
         {
@@ -29,14 +29,9 @@ namespace AIRally.Model.Tiles
             return BaseTile.Draw();
         }
 
-        public override int HasSpawnPoint()
+        public override bool HasPusher()
         {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
+            return true;
         }
     }
 }

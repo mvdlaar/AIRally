@@ -60,15 +60,5 @@ namespace AIRally.Model.Tiles
         {
             return DrawOn(Postfix("CBelt"));
         }
-
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
-        }
     }
 }

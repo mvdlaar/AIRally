@@ -11,7 +11,7 @@ namespace AIRally.Model.Tiles
 
         public override string ToString()
         {
-            return BaseTile.ToString() + "R";
+            return BaseTile + "R";
         }
 
         public override Image Draw()
@@ -19,10 +19,6 @@ namespace AIRally.Model.Tiles
             return DrawOn("Repair");
         }
 
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
-        }
         public override bool HasRepair()
         {
             return true;

@@ -92,7 +92,6 @@
     <EmbeddedResource Include="EMF\Spawn7.EMF" />
     <EmbeddedResource Include="EMF\Spawn8.EMF" />
     <EmbeddedResource Include="EMF\Spawn1.EMF" />
-    <EmbeddedResource Include="EMF\EmptyTile.EMF" />
     <EmbeddedResource Include="EMF\Flag1.EMF" />
     <EmbeddedResource Include="EMF\Flag2.EMF" />
     <EmbeddedResource Include="EMF\Flag3.EMF" />
@@ -129,6 +128,19 @@
     <EmbeddedResource Include="EMF\EBeltUB.EMF" />
     <EmbeddedResource Include="EMF\EBeltUL.EMF" />
     <EmbeddedResource Include="EMF\EBeltUR.EMF" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EMF\Floor.EMF" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EMF\Droid1.emf" />
+    <EmbeddedResource Include="EMF\Droid2.emf" />
+    <EmbeddedResource Include="EMF\Droid3.emf" />
+    <EmbeddedResource Include="EMF\Droid4.emf" />
+    <EmbeddedResource Include="EMF\Droid5.emf" />
+    <EmbeddedResource Include="EMF\Droid6.emf" />
+    <EmbeddedResource Include="EMF\Droid7.emf" />
+    <EmbeddedResource Include="EMF\Droid8.emf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -29,7 +29,11 @@
         private void InitializeComponent()
         {
             this.pbxBoard = new System.Windows.Forms.PictureBox();
+            this.msAI = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pbxBoard)).BeginInit();
+            this.msAI.SuspendLayout();
             this.SuspendLayout();
             // 
             // pbxBoard
@@ -45,21 +49,54 @@
             this.pbxBoard.TabStop = false;
             this.pbxBoard.SizeChanged += new System.EventHandler(this.pbxBoard_SizeChanged);
             // 
+            // msAI
+            // 
+            this.msAI.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.msAI.Location = new System.Drawing.Point(0, 0);
+            this.msAI.Name = "msAI";
+            this.msAI.Size = new System.Drawing.Size(1039, 24);
+            this.msAI.TabIndex = 2;
+            this.msAI.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "&File";
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Text = "&Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1039, 550);
             this.Controls.Add(this.pbxBoard);
+            this.Controls.Add(this.msAI);
+            this.MainMenuStrip = this.msAI;
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pbxBoard)).EndInit();
+            this.msAI.ResumeLayout(false);
+            this.msAI.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.PictureBox pbxBoard;
+        private System.Windows.Forms.MenuStrip msAI;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
     }
 }
 

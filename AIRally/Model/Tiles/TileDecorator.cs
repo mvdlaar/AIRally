@@ -30,5 +30,35 @@ namespace AIRally.Model.Tiles
             g.Dispose();
             return imageTile;
         }
+
+        public override int HasLasers()
+        {
+            return BaseTile.HasLasers();
+        }
+
+        public override bool IsPit()
+        {
+            return BaseTile.IsPit();
+        }
+
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasRepair()
+        {
+            return BaseTile.HasRepair();
+        }
+
+        public override WallDirection[] HasWalls()
+        {
+            return BaseTile.HasWalls();
+        }
+
+        public override bool HasPusher()
+        {
+            return BaseTile.HasPusher();
+        }
     }
 }

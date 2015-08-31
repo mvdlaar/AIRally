@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace AIRally.Model.Tiles
@@ -14,10 +15,23 @@ namespace AIRally.Model.Tiles
         public int X { get; }
         public int Y { get; }
 
-        public Tile(int X, int Y)
+        protected Tile(int X, int Y)
         {
             this.X = X;
             this.Y = Y;
+        }
+
+        protected Image DrawMe(string resourceName)
+        {
+            Image result = null;
+            var myAssembly = Assembly.GetExecutingAssembly();
+            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF."+ resourceName +".EMF");
+            if (myStream != null)
+            {
+                result = new Bitmap(myStream);
+                myStream.Dispose();
+            }
+            return result;
         }
 
         public static Tile MakeTile(string tileString, int x, int y)
@@ -129,7 +143,11 @@ namespace AIRally.Model.Tiles
                         break;
                     case 'L': // Laser
                         i++;
-                        result = new Laser(result, x, y);
+                        number = Convert.ToInt32(tileString[i].ToString());
+                        if (number >= 1 && number <= 3)
+                        {
+                            result = new Laser(result, number, x, y);
+                        }
                         break;
                     case 'P': // Pusher
                         List<int> turns = new List<int>();
@@ -175,7 +193,34 @@ namespace AIRally.Model.Tiles
             return result;
         }
 
-        public abstract int HasSpawnPoint();
-        public abstract bool HasRepair();
+        public virtual int HasSpawnPoint()
+        {
+            return 0;
+        }
+
+        public virtual bool HasRepair()
+        {
+            return false;
+        }
+
+        public virtual int HasLasers()
+        {
+            return 0;
+        }
+
+        public virtual WallDirection[] HasWalls()
+        {
+            return new WallDirection[0];
+        }
+
+        public virtual bool IsPit()
+        {
+            return false;
+        }
+
+        public virtual bool HasPusher()
+        {
+            return false;
+        }
     }
 }

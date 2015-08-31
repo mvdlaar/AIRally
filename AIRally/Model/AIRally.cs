@@ -17,8 +17,7 @@ namespace AIRally.Model
             this.boardLocation = boardLocation;
             Board = new Board(boardLocation);
             programDeck = new ProgramDeck();
-
-            Setup();
+            ais = new List<AI>();
         }
 
         public void Setup()
@@ -34,13 +33,18 @@ namespace AIRally.Model
             // Determine First Player
 
             // Place AIs on Board
-            int i = 0;
+           /* int i = 0;
             while (i < ais.Count)
             {
                 ais[i].X = Board.SpawnPoints[i].X;
                 ais[i].Y = Board.SpawnPoints[i].Y;
                 i++;
-            }
+            }*/
+        }
+
+        public void AddAI()
+        {
+            ais.Add(new AI(ais.Count + 1));
         }
 
 

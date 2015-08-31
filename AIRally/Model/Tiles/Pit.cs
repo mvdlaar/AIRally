@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Reflection;
 
 namespace AIRally.Model.Tiles
 {
@@ -17,25 +16,12 @@ namespace AIRally.Model.Tiles
 
         public override Image Draw()
         {
-            Image result = null;
-            var myAssembly = Assembly.GetExecutingAssembly();
-            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF.PitGeneric.EMF");
-            if (myStream != null)
-            {
-                result = new Bitmap(myStream);
-                myStream.Dispose();
-            }
-            return result;
+            return DrawMe("PitGeneric");
         }
 
-        public override int HasSpawnPoint()
+        public override bool IsPit()
         {
-            return 0;
-        }
-
-        public override bool HasRepair()
-        {
-            return false;
+            return true;
         }
     }
 }

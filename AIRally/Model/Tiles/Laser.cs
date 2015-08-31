@@ -4,14 +4,16 @@ namespace AIRally.Model.Tiles
 {
     public class Laser : TileDecorator
     {
-        public Laser(Tile baseTile, int x, int y) : base(baseTile, x, y)
+        public int Number { get; }
+
+        public Laser(Tile baseTile, int number, int x, int y) : base(baseTile, x, y)
         {
-            
+            Number = number;
         }
 
         public override string ToString()
         {
-            return BaseTile.ToString() + "L0";
+            return BaseTile + "L" + Number;
         }
 
         public override Image Draw()
@@ -19,14 +21,9 @@ namespace AIRally.Model.Tiles
             return BaseTile.Draw();
         }
 
-        public override int HasSpawnPoint()
+        public override int HasLasers()
         {
-            return BaseTile.HasSpawnPoint();
-        }
-
-        public override bool HasRepair()
-        {
-            return BaseTile.HasRepair();
+            return BaseTile.HasLasers() + Number;
         }
     }
 }

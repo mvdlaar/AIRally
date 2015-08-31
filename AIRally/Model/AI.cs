@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Reflection;
 using AIRally.Model.Decks;
 
 namespace AIRally.Model
@@ -26,7 +28,7 @@ namespace AIRally.Model
 
         public AI(int number)
         {
-            this.Number = number;
+            Number = number;
         }
 
         public ProgramCard Register1
@@ -52,6 +54,19 @@ namespace AIRally.Model
         public ProgramCard Register5
         {
             get { return register5; }
+        }
+
+        public Image Draw()
+        {
+            Image result = null;
+            var myAssembly = Assembly.GetExecutingAssembly();
+            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF.Droid" + Number + ".EMF");
+            if (myStream != null)
+            {
+                result = new Bitmap(myStream);
+                myStream.Dispose();
+            }
+            return result;
         }
     }
 }
