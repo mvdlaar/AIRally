@@ -1,17 +1,17 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
     public class Floor : Tile
     {
-        public Floor(int x, int y) : base(x, y)
+        public Floor(Board board, int x, int y) : base(board, x, y)
         {
-            
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawMe("Floor");
+            return PaintMe("Floor");
         }
 
         public override string ToString()

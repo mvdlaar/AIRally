@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using AIRally.Model.Boards;
 using System.Drawing;
 using System.Text;
 
@@ -9,56 +9,35 @@ namespace AIRally.Model.Tiles
         public ConveyorDirection Direction { get; }
         public TurnDirection Turn { get; }
 
-        public ExpressConveyorBelt(Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(baseTile, x, y)
+        public ExpressConveyorBelt(Board board, Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(board, baseTile, x, y)
         {
             Direction = direction;
             Turn = turn;
         }
 
-        private string Postfix(string Prefix)
+        private string Postfix(string prefix)
         {
-            StringBuilder result = new StringBuilder(Prefix);
-            switch (Direction)
-            {
-                case ConveyorDirection.Up:
-                    result.Append('U');
-                    break;
-                case ConveyorDirection.Right:
-                    result.Append('R');
-                    break;
-                case ConveyorDirection.Down:
-                    result.Append('D');
-                    break;
-                case ConveyorDirection.Left:
-                    result.Append('L');
-                    break;
-            }
-
-            switch (Turn)
-            {
-                case TurnDirection.None:
-                    result.Append('N');
-                    break;
-                case TurnDirection.Left:
-                    result.Append('L');
-                    break;
-                case TurnDirection.Right:
-                    result.Append('R');
-                    break;
-                case TurnDirection.Both:
-                    result.Append('B');
-                    break;
-            }
+            StringBuilder result = new StringBuilder(prefix);
+            result.Append(GetConveyorDirectionChar(Direction));
+            result.Append(GetTurnDirectionChar(Turn));
             return result.ToString();
         }
+
         public override string ToString()
         {
             return BaseTile + Postfix("E");
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawOn(Postfix("EBelt"));
+            if (Direction != ConveyorDirection.None)
+            {
+                return PaintOn(Postfix("EBelt"));
+            }
+            else
+            {
+                return BaseTile.Paint();
+            }
         }
     }
 }

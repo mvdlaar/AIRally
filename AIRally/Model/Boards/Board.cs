@@ -1,31 +1,37 @@
-﻿using System;
+﻿using AIRally.Model.Tiles;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using AIRally.Model.Tiles;
 
 namespace AIRally.Model.Boards
 {
-    public class Board 
+    public class Board
     {
         public int Height { get; }
         public int Width { get; }
 
         public string Name { get; }
         public List<Tile> Tiles { get; }
-        public List<Tile> SpawnPoints { get; } 
+        public List<Tile> SpawnPoints { get; }
+
+        internal AIRally aiRally;
+
         public Tile this[int row, int column]
         {
             get { return Tiles[Width * row + column]; }
         }
 
-        public Board(string name, string boardString)
+        public Board(AIRally aiRally, string name, string boardString)
         {
             Name = name;
             Tiles = new List<Tile>();
             SpawnPoints = new List<Tile>();
+            this.aiRally = aiRally;
 
             var lines = Regex.Split(boardString, "\r\n|\r|\n");
 
@@ -40,7 +46,7 @@ namespace AIRally.Model.Boards
                 var tileRow = lines[row + 1].Split(';');
                 for (int column = 0; column < Width; column++)
                 {
-                    currTile = Tile.MakeTile(tileRow[column], column, row);
+                    currTile = Tile.MakeTile(this, tileRow[column], column, row);
                     Tiles.Add(currTile);
                     if (currTile.HasSpawnPoint() != 0)
                     {
@@ -58,9 +64,8 @@ namespace AIRally.Model.Boards
             return FileParts[0];
         }
 
-        public Board(string filename): this(StripFileName(filename), new StreamReader(filename).ReadToEnd())
+        public Board(AIRally airally, string filename) : this(airally, StripFileName(filename), new StreamReader(filename).ReadToEnd())
         {
-
         }
 
         public override string ToString()
@@ -88,6 +93,48 @@ namespace AIRally.Model.Boards
                 }
             }
             return result.ToString();
+        }
+
+        public Image Paint(int width, int height)
+        {
+            int tileHeight = height / Height;
+            int tileWidth = width / Width;
+            Image img;
+
+            Image imgBoard = new Bitmap(width, height);
+            var g = Graphics.FromImage(imgBoard);
+            g.Clear(SystemColors.AppWorkspace);
+            g.CompositingQuality = CompositingQuality.HighSpeed;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.CompositingMode = CompositingMode.SourceCopy;
+
+            for (var row = 0; row < Height; row++)
+            {
+                for (var column = 0; column < Width; column++)
+                {
+                    img = this[row, column].Paint();
+                    if (img != null)
+                    {
+                        g.DrawImage(img, column * tileWidth, row * tileHeight, tileWidth, tileHeight);
+                        img.Dispose();
+                    }
+                }
+            }
+            g.Dispose();
+
+            g = Graphics.FromImage(imgBoard);
+            foreach (var ai in aiRally.AIs)
+            {
+                img = ai.Paint();
+
+                if (img != null)
+                {
+                    g.DrawImage(img, ai.X * tileWidth, ai.Y * tileHeight, tileWidth, tileHeight);
+                    img.Dispose();
+                }
+            }
+            g.Dispose();
+            return imgBoard;
         }
     }
 }

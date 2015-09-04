@@ -1,41 +1,42 @@
-﻿using System.Collections;
+﻿using AIRally.Model.Boards;
+using System.Collections;
 using System.Drawing;
+using System.Text;
 
 namespace AIRally.Model.Tiles
 {
-    public class Gear: TileDecorator
+    public class Gear : TileDecorator
     {
-        public TurnDirection Direction { get; }
+        public TurnDirection Turn { get; }
 
-        public Gear(Tile baseTile, TurnDirection direction, int x, int y) : base(baseTile, x, y)
+        public Gear(Board board, Tile baseTile, TurnDirection direction, int x, int y) : base(board, baseTile, x, y)
         {
-            this.Direction = direction;
+            Turn = direction;
+        }
+
+        private string Postfix(string prefix)
+        {
+            StringBuilder result = new StringBuilder(prefix);
+            result.Append(GetTurnDirectionChar(Turn));
+            return result.ToString();
         }
 
         public override string ToString()
         {
-            if (Direction == TurnDirection.Right)
-            {
-                return BaseTile + "GR";
-            }
-            else
-            {
-                return BaseTile + "GL";
-            }
+            return BaseTile + Postfix("G");
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            switch (Direction)
+            switch (Turn)
             {
                 case TurnDirection.Right:
-                    return DrawOn("GearRight");
-                    break;
+                    return PaintOn("GearRight");
+
                 case TurnDirection.Left:
-                    return DrawOn("GearLeft");
-                    break;
+                    return PaintOn("GearLeft");
             }
-            return BaseTile.Draw();
+            return BaseTile.Paint();
         }
     }
 }

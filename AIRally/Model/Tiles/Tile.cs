@@ -1,31 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AIRally.Model.Boards;
+using System;
 using System.Drawing;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace AIRally.Model.Tiles
 {
     public abstract class Tile
     {
+        protected char GetConveyorDirectionChar(ConveyorDirection cd)
+        {
+            switch (cd)
+            {
+                case ConveyorDirection.Up:
+                    return 'U';
+
+                case ConveyorDirection.Right:
+                    return 'R';
+
+                case ConveyorDirection.Down:
+                    return 'D';
+
+                case ConveyorDirection.Left:
+                    return 'L';
+            }
+            return 'N';
+        }
+
+        protected char GetTurnDirectionChar(TurnDirection td)
+        {
+            switch (td)
+            {
+                case TurnDirection.Left:
+                    return 'L';
+
+                case TurnDirection.Right:
+                    return 'R';
+
+                case TurnDirection.Both:
+                    return 'B';
+            }
+            return 'N';
+        }
+
+        protected char GetWallDirectionChar(WallDirection wd)
+        {
+            switch (wd)
+            {
+                case WallDirection.Top:
+                    return 'T';
+
+                case WallDirection.Bottom:
+                    return 'B';
+
+                case WallDirection.Left:
+                    return 'L';
+
+                case WallDirection.Right:
+                    return 'R';
+            }
+            return 'N';
+        }
+
         public abstract override string ToString();
 
-        public abstract Image Draw();
+        public abstract Image Paint();
 
         public int X { get; }
         public int Y { get; }
 
-        protected Tile(int X, int Y)
+        public Board Board { get; }
+
+        protected Tile(Board board, int x, int y)
         {
-            this.X = X;
-            this.Y = Y;
+            X = x;
+            Y = y;
+            Board = board;
         }
 
-        protected Image DrawMe(string resourceName)
+        protected Image PaintMe(string resourceName)
         {
             Image result = null;
             var myAssembly = Assembly.GetExecutingAssembly();
-            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF."+ resourceName +".EMF");
+            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF." + resourceName + ".EMF");
             if (myStream != null)
             {
                 result = new Bitmap(myStream);
@@ -34,7 +90,67 @@ namespace AIRally.Model.Tiles
             return result;
         }
 
-        public static Tile MakeTile(string tileString, int x, int y)
+        private static ConveyorDirection GetConveyorDirection(char conveyorDirection)
+        {
+            switch (conveyorDirection)
+            {
+                case 'U':
+                    return ConveyorDirection.Up;
+
+                case 'L':
+                    return ConveyorDirection.Left;
+
+                case 'D':
+                    return ConveyorDirection.Down;
+
+                case 'R':
+                    return ConveyorDirection.Right;
+
+                default:
+                    return ConveyorDirection.None;
+            }
+        }
+
+        private static TurnDirection GetTurnDirection(char turnDirection)
+        {
+            switch (turnDirection)
+            {
+                case 'L':
+                    return TurnDirection.Left;
+
+                case 'R':
+                    return TurnDirection.Right;
+
+                case 'B':
+                    return TurnDirection.Both;
+
+                default:
+                    return TurnDirection.None;
+            }
+        }
+
+        private static WallDirection GetWallDirection(char wallDirection)
+        {
+            switch (wallDirection)
+            {
+                case 'T':
+                    return WallDirection.Top;
+
+                case 'L':
+                    return WallDirection.Left;
+
+                case 'B':
+                    return WallDirection.Bottom;
+
+                case 'R':
+                    return WallDirection.Right;
+
+                default:
+                    return WallDirection.None;
+            }
+        }
+
+        public static Tile MakeTile(Board board, string tileString, int x, int y)
         {
             Tile result;
 
@@ -42,150 +158,78 @@ namespace AIRally.Model.Tiles
             switch (tileString[0])
             {
                 case 'F':
-                    result = new Floor(x, y);
+                    result = new Floor(board, x, y);
                     break;
+
                 case 'P':
-                    result = new Pit(x, y);
+                    result = new Pit(board, x, y);
                     break;
+
                 default:
                     return null;
-                    break;
             }
-            
+
             //All following characters are Decorator Tiles
             var i = 1;
             while (i < tileString.Length)
             {
                 int number;
                 string turnString = "12345";
-                ConveyorDirection conveyorDirection;
                 switch (tileString[i])
                 {
                     case 'C': // Conveyor Belt
-                        i++;
-                        switch (tileString[i])
-                        {
-                            case 'L':
-                                conveyorDirection = ConveyorDirection.Left;
-                                break;
-                            case 'D':
-                                conveyorDirection = ConveyorDirection.Down;
-                                break;
-                            case 'R':
-                                conveyorDirection = ConveyorDirection.Right;
-                                break;
-                            default:
-                                conveyorDirection = ConveyorDirection.Up;
-                                break;
-                        }
-                        i++;
-                        switch (tileString[i])
-                        {
-                            case 'N':
-                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.None, x, y);
-                                break;
-                            case 'L':
-                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Left, x, y);
-                                break;
-                            case 'R':
-                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Right, x, y);
-                                break;
-                            case 'B':
-                                result = new ConveyorBelt(result, conveyorDirection, TurnDirection.Both, x, y);
-                                break;
-                        }
+                        result = new ConveyorBelt(board, result, GetConveyorDirection(tileString[++i]),
+                            GetTurnDirection(tileString[++i]), x, y);
                         break;
+
                     case 'E': // Express Conveyor Belt
-                        i++;
-                        switch (tileString[i])
-                        {
-                            case 'L':
-                                conveyorDirection = ConveyorDirection.Left;
-                                break;
-                            case 'D':
-                                conveyorDirection = ConveyorDirection.Down;
-                                break;
-                            case 'R':
-                                conveyorDirection = ConveyorDirection.Right;
-                                break;
-                            default:
-                                conveyorDirection = ConveyorDirection.Up;
-                                break;
-                        }
-                        i++;
-                        switch (tileString[i])
-                        {
-                            case 'N':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.None, x, y);
-                                break;
-                            case 'L':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Left, x, y);
-                                break;
-                            case 'R':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Right, x, y);
-                                break;
-                            case 'B':
-                                result = new ExpressConveyorBelt(result, conveyorDirection, TurnDirection.Both, x, y);
-                                break;
-                        }
+                        result = new ExpressConveyorBelt(board, result, GetConveyorDirection(tileString[++i]),
+                            GetTurnDirection(tileString[++i]), x, y);
                         break;
+
                     case 'F': // Flag
-                        i++;
-                        number = Convert.ToInt32(tileString[i].ToString());
+                        number = Convert.ToInt32(tileString[++i].ToString());
                         if (number >= 1 && number <= 8)
                         {
-                            result = new Flag(result, number, x, y);
+                            result = new Flag(board, result, number, x, y);
                         }
                         break;
+
                     case 'G': // Gear
-                        i++;
-                        result = tileString[i] == 'R' ? new Gear(result, TurnDirection.Right, x, y) : new Gear(result, TurnDirection.Left, x, y);
+                        result = new Gear(board, result, GetTurnDirection(tileString[++i]), x, y);
                         break;
+
                     case 'L': // Laser
-                        i++;
-                        number = Convert.ToInt32(tileString[i].ToString());
+                        number = Convert.ToInt32(tileString[++i].ToString());
                         if (number >= 1 && number <= 3)
                         {
-                            result = new Laser(result, number, x, y);
+                            result = new Laser(board, result, number, x, y);
                         }
                         break;
+
                     case 'P': // Pusher
-                        List<int> turns = new List<int>();
+                        var turns = new bool[5]; ;
                         while (i < tileString.Length - 1 && turnString.Contains(tileString[i + 1].ToString()))
                         {
-                            i++;
-                            turns.Add(Convert.ToInt32(tileString[i].ToString()));
+                            turns[Convert.ToInt32(tileString[++i].ToString()) - 1] = true;
                         }
-                        result = new Pusher(result, turns, x, y);
+                        result = new Pusher(board, result, turns, x, y);
                         break;
+
                     case 'R': // Repair
-                        result = new Repair(result, x, y);
+                        result = new Repair(board, result, x, y);
                         break;
+
                     case 'S': // Spawnpoint
-                        i++;
-                        number = Convert.ToInt32(tileString[i].ToString());
+                        number = Convert.ToInt32(tileString[++i].ToString());
                         if (number >= 1 && number <= 8)
                         {
-                            result = new SpawnPoint(result, number, x, y);
+                            result = new SpawnPoint(board, result, number, x, y);
                         }
                         break;
+
                     case 'W': // Wall
-                        i++;
-                        switch (tileString[i])
-                        {
-                            case 'T':
-                                result = new Wall(result, WallDirection.Top, x, y);
-                                break;
-                            case 'L':
-                                result = new Wall(result, WallDirection.Left, x, y);
-                                break;
-                            case 'B':
-                                result = new Wall(result, WallDirection.Bottom, x, y);
-                                break;
-                            case 'R':
-                                result = new Wall(result, WallDirection.Right, x, y);
-                                break;
-                        }
+                        result = new Wall(board, result, GetWallDirection(tileString[++i]), x, y);
                         break;
                 }
                 i++;
@@ -221,6 +265,11 @@ namespace AIRally.Model.Tiles
         public virtual bool HasPusher()
         {
             return false;
+        }
+
+        public virtual AI HasAI()
+        {
+            return Board.aiRally.AIs[X, Y];
         }
     }
 }

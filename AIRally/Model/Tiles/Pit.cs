@@ -1,12 +1,12 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
-    public class Pit: Tile
+    public class Pit : Tile
     {
-        public Pit(int x, int y) : base(x, y)
+        public Pit(Board board, int x, int y) : base(board, x, y)
         {
-            
         }
 
         public override string ToString()
@@ -14,9 +14,9 @@ namespace AIRally.Model.Tiles
             return "P";
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawMe("PitGeneric");
+            return PaintMe("PitGeneric");
         }
 
         public override bool IsPit()

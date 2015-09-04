@@ -41,11 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\AIList.cs" />
     <Compile Include="Model\AIRally.cs" />
     <Compile Include="Model\Boards\Board.cs" />
     <Compile Include="Model\Decks\ProgramCard.cs" />
     <Compile Include="Model\Decks\ProgramCardAction.cs" />
     <Compile Include="Model\Decks\ProgramDeck.cs" />
+    <Compile Include="Model\Registers.cs" />
     <Compile Include="Model\Tiles\Flag.cs" />
     <Compile Include="Model\Tiles\Gear.cs" />
     <Compile Include="Model\Tiles\TurnDirection.cs" />
@@ -78,6 +80,7 @@
     <EmbeddedResource Include="EMF\CBeltUL.EMF" />
     <EmbeddedResource Include="EMF\CBeltUN.EMF" />
     <EmbeddedResource Include="EMF\CBeltUR.EMF" />
+    <EmbeddedResource Include="EMF\Droid1.EMF" />
     <EmbeddedResource Include="EMF\EBeltUN.EMF" />
   </ItemGroup>
   <ItemGroup>
@@ -133,14 +136,13 @@
     <EmbeddedResource Include="EMF\Floor.EMF" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EMF\Droid1.emf" />
-    <EmbeddedResource Include="EMF\Droid2.emf" />
-    <EmbeddedResource Include="EMF\Droid3.emf" />
-    <EmbeddedResource Include="EMF\Droid4.emf" />
-    <EmbeddedResource Include="EMF\Droid5.emf" />
-    <EmbeddedResource Include="EMF\Droid6.emf" />
-    <EmbeddedResource Include="EMF\Droid7.emf" />
-    <EmbeddedResource Include="EMF\Droid8.emf" />
+    <EmbeddedResource Include="EMF\Droid2.EMF" />
+    <EmbeddedResource Include="EMF\Droid3.EMF" />
+    <EmbeddedResource Include="EMF\Droid4.EMF" />
+    <EmbeddedResource Include="EMF\Droid5.EMF" />
+    <EmbeddedResource Include="EMF\Droid6.EMF" />
+    <EmbeddedResource Include="EMF\Droid7.EMF" />
+    <EmbeddedResource Include="EMF\Droid8.EMF" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

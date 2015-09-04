@@ -1,6 +1,6 @@
-﻿using System.Drawing;
-using System.IO;
-using System.Reflection;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
+using System.Text;
 
 namespace AIRally.Model.Tiles
 {
@@ -8,42 +8,40 @@ namespace AIRally.Model.Tiles
     {
         public WallDirection Direction { get; }
 
-        public Wall(Tile baseTile, WallDirection direction, int x, int y) : base(baseTile, x, y)
+        public Wall(Board board, Tile baseTile, WallDirection direction, int x, int y) : base(board, baseTile, x, y)
         {
             Direction = direction;
         }
 
-        public override string ToString()
+        private string Postfix(string prefix)
         {
-            switch (Direction)
-            {
-                case WallDirection.Top:
-                    return BaseTile + "WT";
-                case WallDirection.Right:
-                    return BaseTile + "WR";
-                case WallDirection.Bottom:
-                    return BaseTile + "WB";
-                case WallDirection.Left:
-                    return BaseTile + "WL";
-                default:
-                    return BaseTile.ToString();
-            }
+            StringBuilder result = new StringBuilder(prefix);
+            result.Append(GetWallDirectionChar(Direction));
+            return result.ToString();
         }
 
-        public override Image Draw()
+        public override string ToString()
+        {
+            return BaseTile + Postfix("W");
+        }
+
+        public override Image Paint()
         {
             switch (Direction)
             {
                 case WallDirection.Top:
-                    return DrawOn("WallUp");
+                    return PaintOn("WallUp");
+
                 case WallDirection.Bottom:
-                    return DrawOn("WallDown");
+                    return PaintOn("WallDown");
+
                 case WallDirection.Left:
-                    return DrawOn("WallLeft");
+                    return PaintOn("WallLeft");
+
                 case WallDirection.Right:
-                    return DrawOn("WallRight");
+                    return PaintOn("WallRight");
             }
-            return BaseTile.Draw();
+            return BaseTile.Paint();
         }
 
         public override WallDirection[] HasWalls()

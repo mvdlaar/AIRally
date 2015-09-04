@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AIRally.Model.Boards;
+using System;
 using System.Drawing;
 using System.Text;
 
@@ -6,27 +7,38 @@ namespace AIRally.Model.Tiles
 {
     public class Pusher : TileDecorator
     {
-        public List<int> Turns { get; }
+        public bool[] Turns;
 
-        public Pusher(Tile baseTile, List<int> turns, int x, int y) : base(baseTile, x, y)
+        public Pusher(Board board, Tile baseTile, bool[] turns, int x, int y) : base(board, baseTile, x, y)
         {
-            Turns = turns;
+            if (turns.Length == 5)
+            {
+                Turns = turns;
+            }
+            else
+            {
+                throw new Exception("Pusher initialization error; Turns does not equal 5");
+            }
         }
+
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
             result.Append(BaseTile);
             result.Append('P');
-            foreach (int turn in Turns)
+            for (int i = 0; i < 5; i++)
             {
-                result.Append(turn);
+                if (Turns[i])
+                {
+                    result.Append(i);
+                }
             }
             return result.ToString();
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return BaseTile.Draw();
+            return BaseTile.Paint();
         }
 
         public override bool HasPusher()

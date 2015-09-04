@@ -1,53 +1,25 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 using System.Text;
 
 namespace AIRally.Model.Tiles
 {
-    public class ConveyorBelt: TileDecorator
+    public class ConveyorBelt : TileDecorator
     {
         public ConveyorDirection Direction { get; }
         public TurnDirection Turn { get; }
 
-        public ConveyorBelt(Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(baseTile, x, y)
+        public ConveyorBelt(Board board, Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x, int y) : base(board, baseTile, x, y)
         {
             this.Direction = direction;
             this.Turn = turn;
         }
 
-        private string Postfix(string Prefix)
+        private string Postfix(string prefix)
         {
-            StringBuilder result = new StringBuilder(Prefix);
-            switch (Direction)
-            {
-                case ConveyorDirection.Up:
-                    result.Append('U');
-                    break;
-                case ConveyorDirection.Right:
-                    result.Append('R');
-                    break;
-                case ConveyorDirection.Down:
-                    result.Append('D');
-                    break;
-                case ConveyorDirection.Left:
-                    result.Append('L');
-                    break;
-            }
-
-            switch (Turn)
-            {
-                case TurnDirection.None:
-                    result.Append('N');
-                    break;
-                case TurnDirection.Left:
-                    result.Append('L');
-                    break;
-                case TurnDirection.Right:
-                    result.Append('R');
-                    break;
-                case TurnDirection.Both:
-                    result.Append('B');
-                    break;
-            }
+            StringBuilder result = new StringBuilder(prefix);
+            result.Append(GetConveyorDirectionChar(Direction));
+            result.Append(GetTurnDirectionChar(Turn));
             return result.ToString();
         }
 
@@ -56,9 +28,16 @@ namespace AIRally.Model.Tiles
             return BaseTile + Postfix("C");
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawOn(Postfix("CBelt"));
+            if (Direction != ConveyorDirection.None)
+            {
+                return PaintOn(Postfix("CBelt"));
+            }
+            else
+            {
+                return BaseTile.Paint();
+            }
         }
     }
 }

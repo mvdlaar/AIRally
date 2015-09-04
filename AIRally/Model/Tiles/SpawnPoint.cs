@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
@@ -6,7 +7,7 @@ namespace AIRally.Model.Tiles
     {
         public int Number { get; }
 
-        public SpawnPoint(Tile baseTile, int number, int x, int y) : base(baseTile, x, y)
+        public SpawnPoint(Board board, Tile baseTile, int number, int x, int y) : base(board, baseTile, x, y)
         {
             this.Number = number;
         }
@@ -16,9 +17,9 @@ namespace AIRally.Model.Tiles
             return BaseTile + "S" + Number;
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawOn("Spawn" + Number);
+            return PaintOn("Spawn" + Number);
         }
 
         public override int HasSpawnPoint()

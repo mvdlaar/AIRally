@@ -1,12 +1,12 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
-    public class Repair: TileDecorator
+    public class Repair : TileDecorator
     {
-        public Repair(Tile baseTile, int x, int y) : base(baseTile, x, y)
+        public Repair(Board board, Tile baseTile, int x, int y) : base(board, baseTile, x, y)
         {
-            
         }
 
         public override string ToString()
@@ -14,9 +14,9 @@ namespace AIRally.Model.Tiles
             return BaseTile + "R";
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawOn("Repair");
+            return PaintOn("Repair");
         }
 
         public override bool HasRepair()

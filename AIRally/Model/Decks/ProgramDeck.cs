@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AIRally.Model.Decks
 {
-    class ProgramDeck
+    internal class ProgramDeck
     {
         private readonly List<ProgramCard> programCards = new List<ProgramCard>();
         private readonly List<ProgramCard> drawpile = new List<ProgramCard>();
@@ -88,6 +88,7 @@ namespace AIRally.Model.Decks
                 drawpile[n] = helperCard;
             }
         }
+
         public void BlockCard(ProgramCard blockCard)
         {
             blockCard.Blocked = true;

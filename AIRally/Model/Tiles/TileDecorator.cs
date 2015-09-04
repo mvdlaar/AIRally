@@ -1,33 +1,27 @@
-﻿using System.Drawing;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
-    public abstract class TileDecorator: Tile
+    public abstract class TileDecorator : Tile
     {
         protected Tile BaseTile = null;
 
-        protected TileDecorator(Tile baseTile, int x, int y): base(x, y)
+        protected TileDecorator(Board board, Tile baseTile, int x, int y) : base(board, x, y)
         {
-            this.BaseTile = baseTile;
+            BaseTile = baseTile;
         }
 
-        protected Image DrawOn(string resourceName)
+        protected Image PaintOn(string resourceName)
         {
-            Image imageTile = BaseTile.Draw();
-            Graphics g = Graphics.FromImage(imageTile);
-            Assembly myAssembly = Assembly.GetExecutingAssembly();
-            Stream myStream = myAssembly.GetManifestResourceStream("AIRally.EMF." + resourceName + ".EMF");
-            if (myStream != null)
+            Image imageTile = BaseTile.Paint();
+            Image image = PaintMe(resourceName);
+            if (image != null)
             {
-                Image image = new Bitmap(myStream);
+                Graphics g = Graphics.FromImage(imageTile);
                 g.DrawImage(image, new Point(0, 0));
-                image.Dispose();
-                myStream.Dispose();
+                g.Dispose();
             }
-            g.Dispose();
             return imageTile;
         }
 

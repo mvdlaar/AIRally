@@ -46,7 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawBoard.cs" />
+    <Compile Include="SelectAI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SelectAI.Designer.cs">
+      <DependentUpon>SelectAI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectAIs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectAIs.Designer.cs">
+      <DependentUpon>SelectAIs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +66,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="SelectAI.resx">
+      <DependentUpon>SelectAI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectAIs.resx">
+      <DependentUpon>SelectAIs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

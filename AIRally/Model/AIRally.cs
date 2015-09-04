@@ -1,83 +1,96 @@
-﻿using System.Collections.Generic;
-using AIRally.Model.Boards;
+﻿using AIRally.Model.Boards;
 using AIRally.Model.Decks;
-using AIRally.Model.Tiles;
+using System;
+using System.Drawing;
 
 namespace AIRally.Model
 {
     public class AIRally
     {
-        private string boardLocation;
-        public  Board Board { get; }
-        private List<AI> ais;
+        private const int nCards = 9;
+
+        public Board Board { get; }
+        public AIList AIs { get; }
+
         private ProgramDeck programDeck;
 
         public AIRally(string boardLocation)
         {
-            this.boardLocation = boardLocation;
-            Board = new Board(boardLocation);
+            Board = new Board(this, boardLocation);
             programDeck = new ProgramDeck();
-            ais = new List<AI>();
+            AIs = new AIList();
         }
 
         public void Setup()
         {
             // Choose AI
-                // Set Archive Marker
-                // Set up Program Sheet
+            // Set Archive Marker
+            // Set up Program Sheet
             // Give Life Tokens
-                // Each AI gets 3 Life tokens
+            // Each AI gets 3 Life tokens
             // Shuffle decks
-                // Shuffle Program Deck
+            // Shuffle Program Deck
             programDeck.Shuffle();
             // Determine First Player
 
             // Place AIs on Board
-           /* int i = 0;
-            while (i < ais.Count)
-            {
-                ais[i].X = Board.SpawnPoints[i].X;
-                ais[i].Y = Board.SpawnPoints[i].Y;
-                i++;
-            }*/
+            // Part of AddAI
         }
 
-        public void AddAI()
+        public void AddAI(string name, string location)
         {
-            ais.Add(new AI(ais.Count + 1));
+            AIs.Add(Board, name, location);
         }
 
+        public void ClearAIs()
+        {
+            AIs.Clear();
+        }
 
-        void PlayTurn()
+        private void PlayTurn()
         {
             // Deal Program Cards
+            DealCards();
+
             // Program Registers
             // Announce Power Down for NEXT turn
             AskBotActions();
 
             // Complete each register in order:
-                // Execute Program Cards
-                // Complete board movements
-                // Resolve interactions
-                // Touch Flag and Repair sites
+            // Execute Program Cards
+            // Complete board movements
+            // Resolve interactions
+            // Touch Flag and Repair sites
             CompleteRegisters();
 
             // Clean up
             Cleanup();
         }
 
+        private void DealCards()
+        {
+            for (var i = nCards - 1; i <= 0; i--)
+            {
+                foreach (AI ai in AIs)
+                {
+                    if (ai.Damage <= i)
+                    {
+                        ai.ProgramCards.Add(programDeck.Deal());
+                    }
+                }
+            }
+        }
+
         private void AskBotActions()
         {
-
         }
 
         private void CompleteRegisters()
         {
-            int i = 1;
+            var i = 1;
 
             while (i <= 5)
             {
-                RevealProgramCards(i);
                 AIMove(i);
                 BoardElementsMove();
                 LasersFire();
@@ -86,35 +99,32 @@ namespace AIRally.Model
             }
         }
 
-        private void RevealProgramCards(int register)
-        {
-            
-        }
-
         private void AIMove(int register)
         {
-            
+            foreach (AI ai in AIs)
+            {
+            }
         }
 
         private void BoardElementsMove()
         {
-            
         }
 
         private void LasersFire()
         {
-            
         }
 
         private void TouchCheckPoints()
         {
-            
         }
 
         private void Cleanup()
         {
-
         }
 
+        public Image PaintBoard(int width, int height)
+        {
+            return Board.Paint(width, height);
+        }
     }
 }

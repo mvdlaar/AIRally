@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using AIRally.Model.Boards;
+using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
@@ -6,9 +7,9 @@ namespace AIRally.Model.Tiles
     {
         public int Number { get; }
 
-        public Flag(Tile baseTile, int number, int x, int y): base(baseTile, x, y)
+        public Flag(Board board, Tile baseTile, int number, int x, int y) : base(board, baseTile, x, y)
         {
-            this.Number = number;
+            Number = number;
         }
 
         public override string ToString()
@@ -16,9 +17,9 @@ namespace AIRally.Model.Tiles
             return BaseTile + "F" + Number;
         }
 
-        public override Image Draw()
+        public override Image Paint()
         {
-            return DrawOn("Flag" + Number);
+            return PaintOn("Flag" + Number);
         }
 
         public override bool HasRepair()
