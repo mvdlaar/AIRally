@@ -1,4 +1,5 @@
-﻿using AIRally.Model.Tiles;
+﻿using AIRally.Model.Decks;
+using AIRally.Model.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,19 +13,7 @@ namespace AIRally.Model.Boards
 {
     public class Board
     {
-        public int Height { get; }
-        public int Width { get; }
-
-        public string Name { get; }
-        public List<Tile> Tiles { get; }
-        public List<Tile> SpawnPoints { get; }
-
         internal AIRally aiRally;
-
-        public Tile this[int row, int column]
-        {
-            get { return Tiles[Width * row + column]; }
-        }
 
         public Board(AIRally aiRally, string name, string boardString)
         {
@@ -41,12 +30,12 @@ namespace AIRally.Model.Boards
 
             Tile currTile = null;
 
-            for (int row = 0; row < Height; row++)
+            for (var y = 0; y < Height; y++)
             {
-                var tileRow = lines[row + 1].Split(';');
-                for (int column = 0; column < Width; column++)
+                var tileRow = lines[y + 1].Split(';');
+                for (var x = 0; x < Width; x++)
                 {
-                    currTile = Tile.MakeTile(this, tileRow[column], column, row);
+                    currTile = Tile.MakeTile(this, tileRow[x], x, y);
                     Tiles.Add(currTile);
                     if (currTile.HasSpawnPoint() != 0)
                     {
@@ -57,24 +46,71 @@ namespace AIRally.Model.Boards
             SpawnPoints = SpawnPoints.OrderBy(o => o.HasSpawnPoint()).ToList();
         }
 
-        private static string StripFileName(string filename)
+        public Board(AIRally airally, string filename)
+            : this(airally, StripFileName(filename), new StreamReader(filename).ReadToEnd())
         {
-            var FolderParts = filename.Split('\\');
-            var FileParts = FolderParts[FolderParts.Length - 1].Split('.');
-            return FileParts[0];
         }
 
-        public Board(AIRally airally, string filename) : this(airally, StripFileName(filename), new StreamReader(filename).ReadToEnd())
+        public int Height { get; }
+        public string Name { get; }
+        public List<Tile> SpawnPoints { get; }
+        public List<Tile> Tiles { get; }
+        public int Width { get; }
+
+        public Tile this[int x, int y]
         {
+            get { return Tiles[Width*y + x]; }
+        }
+
+        public Image Paint(int width, int height)
+        {
+            var tileHeight = height/Height;
+            var tileWidth = width/Width;
+            Image img;
+
+            Image imgBoard = new Bitmap(width, height);
+            var g = Graphics.FromImage(imgBoard);
+            g.Clear(SystemColors.AppWorkspace);
+            g.CompositingQuality = CompositingQuality.HighSpeed;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.CompositingMode = CompositingMode.SourceCopy;
+
+            for (var y = 0; y < Height; y++)
+            {
+                for (var x = 0; x < Width; x++)
+                {
+                    img = this[x, y].Paint();
+                    if (img != null)
+                    {
+                        g.DrawImage(img, x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+                        img.Dispose();
+                    }
+                }
+            }
+            g.Dispose();
+
+            g = Graphics.FromImage(imgBoard);
+            foreach (var ai in aiRally.AIs)
+            {
+                img = ai.Paint();
+
+                if (img != null)
+                {
+                    g.DrawImage(img, ai.X*tileWidth, ai.Y*tileHeight, tileWidth, tileHeight);
+                    img.Dispose();
+                }
+            }
+            g.Dispose();
+            return imgBoard;
         }
 
         public override string ToString()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             result.Append(Height);
             result.Append('x');
             result.Append(Width);
-            int column = 0;
+            var column = 0;
             foreach (var tile in Tiles)
             {
                 if (column == 0)
@@ -95,46 +131,126 @@ namespace AIRally.Model.Boards
             return result.ToString();
         }
 
-        public Image Paint(int width, int height)
+        internal void ExecuteProgramCard(AI ai, ProgramCard card)
         {
-            int tileHeight = height / Height;
-            int tileWidth = width / Width;
-            Image img;
-
-            Image imgBoard = new Bitmap(width, height);
-            var g = Graphics.FromImage(imgBoard);
-            g.Clear(SystemColors.AppWorkspace);
-            g.CompositingQuality = CompositingQuality.HighSpeed;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.CompositingMode = CompositingMode.SourceCopy;
-
-            for (var row = 0; row < Height; row++)
+            switch (card.CardAction)
             {
-                for (var column = 0; column < Width; column++)
+                case ProgramCardAction.RotateLeft:
+                    ai.Direction = TileDirectionUtil.TurnLeft(ai.Direction);
+                    break;
+
+                case ProgramCardAction.RotateRight:
+                    ai.Direction = TileDirectionUtil.TurnRight(ai.Direction);
+                    break;
+
+                case ProgramCardAction.UTurn:
+                    ai.Direction = TileDirectionUtil.Opposite(ai.Direction);
+                    break;
+
+                case ProgramCardAction.Move1:
+                    MoveAIOnce(ai);
+                    break;
+
+                case ProgramCardAction.Move2:
+                    MoveAIOnce(ai);
+                    MoveAIOnce(ai);
+                    break;
+
+                case ProgramCardAction.Move3:
+                    MoveAIOnce(ai);
+                    MoveAIOnce(ai);
+                    MoveAIOnce(ai);
+                    break;
+
+                case ProgramCardAction.BackUp:
+                    MoveAIOnce(ai, TileDirectionUtil.Opposite(ai.Direction));
+                    break;
+            }
+        }
+
+        private static string StripFileName(string filename)
+        {
+            var folderParts = filename.Split('\\');
+            var fileParts = folderParts[folderParts.Length - 1].Split('.');
+            return fileParts[0];
+        }
+
+        private void MoveAIOnce(AI ai, TileDirection direction)
+        {
+            if (direction != TileDirection.None)
+            {
+                var toX = ai.X;
+                var toY = ai.Y;
+
+                switch (direction)
                 {
-                    img = this[row, column].Paint();
-                    if (img != null)
+                    case TileDirection.Up:
+                        toY--;
+                        break;
+
+                    case TileDirection.Down:
+                        toY++;
+                        break;
+
+                    case TileDirection.Left:
+                        toX--;
+                        break;
+
+                    case TileDirection.Right:
+                        toX++;
+                        break;
+                }
+
+                //Check if movement is off the board
+                if (toX < 0 || toY < 0 || toX >= Width || toY >= Height)
+                {
+                    if (!this[ai.X, ai.Y].HasWall(direction))
                     {
-                        g.DrawImage(img, column * tileWidth, row * tileHeight, tileWidth, tileHeight);
-                        img.Dispose();
+                        ai.Die();
+                    }
+                }
+                else
+                {
+                    //Check if movement is blocked by walls
+                    if (!this[ai.X, ai.Y].HasWall(ai.Direction) &&
+                        !this[toX, toY].HasWall(TileDirectionUtil.Opposite(direction)))
+                    {
+                        //Check if movement is into a Pit
+                        if (this[toX, toY].IsPit())
+                        {
+                            ai.X = toX;
+                            ai.Y = toY;
+                            ai.Die();
+                        }
+                        else
+                        {
+                            //Check if an AI is already on the new Tile
+                            if (this[toX, toY].HasAI() != null)
+                            {
+                                //Move the AI on the new Tile (if not possible the AI stays)
+                                //MoveAIOnce(this[toX, toY].HasAI(), direction);
+                                //If the other AI moved, move this AI
+                                if (this[toX, toY].HasAI() == null)
+                                {
+                                    ai.X = toX;
+                                    ai.Y = toY;
+                                }
+                            }
+                            else
+                            {
+                                //When there are no problems, just move the AI
+                                ai.X = toX;
+                                ai.Y = toY;
+                            }
+                        }
                     }
                 }
             }
-            g.Dispose();
+        }
 
-            g = Graphics.FromImage(imgBoard);
-            foreach (var ai in aiRally.AIs)
-            {
-                img = ai.Paint();
-
-                if (img != null)
-                {
-                    g.DrawImage(img, ai.X * tileWidth, ai.Y * tileHeight, tileWidth, tileHeight);
-                    img.Dispose();
-                }
-            }
-            g.Dispose();
-            return imgBoard;
+        private void MoveAIOnce(AI ai)
+        {
+            MoveAIOnce(ai, ai.Direction);
         }
     }
 }

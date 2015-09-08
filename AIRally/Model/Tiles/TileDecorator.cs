@@ -5,24 +5,11 @@ namespace AIRally.Model.Tiles
 {
     public abstract class TileDecorator : Tile
     {
-        protected Tile BaseTile = null;
+        protected Tile BaseTile;
 
         protected TileDecorator(Board board, Tile baseTile, int x, int y) : base(board, x, y)
         {
             BaseTile = baseTile;
-        }
-
-        protected Image PaintOn(string resourceName)
-        {
-            Image imageTile = BaseTile.Paint();
-            Image image = PaintMe(resourceName);
-            if (image != null)
-            {
-                Graphics g = Graphics.FromImage(imageTile);
-                g.DrawImage(image, new Point(0, 0));
-                g.Dispose();
-            }
-            return imageTile;
         }
 
         public override int HasLasers()
@@ -30,14 +17,9 @@ namespace AIRally.Model.Tiles
             return BaseTile.HasLasers();
         }
 
-        public override bool IsPit()
+        public override bool HasPusher()
         {
-            return BaseTile.IsPit();
-        }
-
-        public override int HasSpawnPoint()
-        {
-            return BaseTile.HasSpawnPoint();
+            return BaseTile.HasPusher();
         }
 
         public override bool HasRepair()
@@ -45,14 +27,37 @@ namespace AIRally.Model.Tiles
             return BaseTile.HasRepair();
         }
 
-        public override WallDirection[] HasWalls()
+        public override int HasSpawnPoint()
+        {
+            return BaseTile.HasSpawnPoint();
+        }
+
+        public override bool HasWall(TileDirection direction)
+        {
+            return BaseTile.HasWall(direction);
+        }
+
+        public override TileDirection[] HasWalls()
         {
             return BaseTile.HasWalls();
         }
 
-        public override bool HasPusher()
+        public override bool IsPit()
         {
-            return BaseTile.HasPusher();
+            return BaseTile.IsPit();
+        }
+
+        protected Image PaintOn(string resourceName)
+        {
+            var imageTile = BaseTile.Paint();
+            var image = PaintMe(resourceName);
+            if (image != null)
+            {
+                var g = Graphics.FromImage(imageTile);
+                g.DrawImage(image, new Point(0, 0));
+                g.Dispose();
+            }
+            return imageTile;
         }
     }
 }

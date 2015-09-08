@@ -1,6 +1,6 @@
 ﻿namespace AIRallyPlayer
 {
-    partial class SelectAIs
+    partial class frmSelectAIs
     {
         /// <summary>
         /// Required designer variable.
@@ -137,7 +137,7 @@
             this.btnRandomize.Text = "Randomize";
             this.btnRandomize.UseVisualStyleBackColor = true;
             // 
-            // SelectAIs
+            // frmSelectAIs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -154,7 +154,7 @@
             this.Controls.Add(this.selectAI3);
             this.Controls.Add(this.selectAI2);
             this.Controls.Add(this.selectAI1);
-            this.Name = "SelectAIs";
+            this.Name = "frmSelectAIs";
             this.Text = "Select AI";
             this.ResumeLayout(false);
 

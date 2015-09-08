@@ -5,16 +5,16 @@ namespace AIRally.Model.Tiles
 {
     public class SpawnPoint : TileDecorator
     {
-        public int Number { get; }
-
         public SpawnPoint(Board board, Tile baseTile, int number, int x, int y) : base(board, baseTile, x, y)
         {
-            this.Number = number;
+            Number = number;
         }
 
-        public override string ToString()
+        public int Number { get; }
+
+        public override int HasSpawnPoint()
         {
-            return BaseTile + "S" + Number;
+            return Number;
         }
 
         public override Image Paint()
@@ -22,9 +22,9 @@ namespace AIRally.Model.Tiles
             return PaintOn("Spawn" + Number);
         }
 
-        public override int HasSpawnPoint()
+        public override string ToString()
         {
-            return Number;
+            return BaseTile + "S" + Number;
         }
     }
 }

@@ -1,18 +1,14 @@
 ﻿using AIRally.Model.Boards;
 using AIRally.Model.Decks;
-using System;
 using System.Drawing;
+using System.Linq;
 
 namespace AIRally.Model
 {
     public class AIRally
     {
-        private const int nCards = 9;
-
-        public Board Board { get; }
-        public AIList AIs { get; }
-
-        private ProgramDeck programDeck;
+        private const int MaxCards = 9;
+        private readonly ProgramDeck programDeck;
 
         public AIRally(string boardLocation)
         {
@@ -21,21 +17,8 @@ namespace AIRally.Model
             AIs = new AIList();
         }
 
-        public void Setup()
-        {
-            // Choose AI
-            // Set Archive Marker
-            // Set up Program Sheet
-            // Give Life Tokens
-            // Each AI gets 3 Life tokens
-            // Shuffle decks
-            // Shuffle Program Deck
-            programDeck.Shuffle();
-            // Determine First Player
-
-            // Place AIs on Board
-            // Part of AddAI
-        }
+        public AIList AIs { get; }
+        public Board Board { get; }
 
         public void AddAI(string name, string location)
         {
@@ -47,7 +30,12 @@ namespace AIRally.Model
             AIs.Clear();
         }
 
-        private void PlayTurn()
+        public Image PaintBoard(int width, int height)
+        {
+            return Board.Paint(width, height);
+        }
+
+        public void PlayTurn()
         {
             // Deal Program Cards
             DealCards();
@@ -67,21 +55,19 @@ namespace AIRally.Model
             Cleanup();
         }
 
-        private void DealCards()
+        private void AskBotActions()
         {
-            for (var i = nCards - 1; i <= 0; i--)
+            foreach (var ai in AIs)
             {
-                foreach (AI ai in AIs)
-                {
-                    if (ai.Damage <= i)
-                    {
-                        ai.ProgramCards.Add(programDeck.Deal());
-                    }
-                }
+                ai.SelectCards();
             }
         }
 
-        private void AskBotActions()
+        private void BoardElementsMove()
+        {
+        }
+
+        private void Cleanup()
         {
         }
 
@@ -91,7 +77,7 @@ namespace AIRally.Model
 
             while (i <= 5)
             {
-                AIMove(i);
+                ExecuteRegisters(i);
                 BoardElementsMove();
                 LasersFire();
                 TouchCheckPoints();
@@ -99,15 +85,28 @@ namespace AIRally.Model
             }
         }
 
-        private void AIMove(int register)
+        private void DealCards()
         {
-            foreach (AI ai in AIs)
+            programDeck.Shuffle();
+            for (var i = MaxCards - 1; i >= 0; i--)
             {
+                foreach (var ai in AIs)
+                {
+                    if (ai.Damage <= i)
+                    {
+                        ai.ProgramCards.Add(programDeck.Deal());
+                    }
+                }
             }
         }
 
-        private void BoardElementsMove()
+        private void ExecuteRegisters(int register)
         {
+            var list = AIs.OrderByDescending(x => x.ProgramCards[register].Priority).ToList();
+            foreach (var ai in list)
+            {
+                Board.ExecuteProgramCard(ai, ai.ProgramCards[register]);
+            }
         }
 
         private void LasersFire()
@@ -116,15 +115,6 @@ namespace AIRally.Model
 
         private void TouchCheckPoints()
         {
-        }
-
-        private void Cleanup()
-        {
-        }
-
-        public Image PaintBoard(int width, int height)
-        {
-            return Board.Paint(width, height);
         }
     }
 }

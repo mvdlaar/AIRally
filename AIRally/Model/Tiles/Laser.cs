@@ -5,16 +5,16 @@ namespace AIRally.Model.Tiles
 {
     public class Laser : TileDecorator
     {
-        public int Number { get; }
-
         public Laser(Board board, Tile baseTile, int number, int x, int y) : base(board, baseTile, x, y)
         {
             Number = number;
         }
 
-        public override string ToString()
+        public int Number { get; }
+
+        public override int HasLasers()
         {
-            return BaseTile + "L" + Number;
+            return BaseTile.HasLasers() + Number;
         }
 
         public override Image Paint()
@@ -22,9 +22,9 @@ namespace AIRally.Model.Tiles
             return BaseTile.Paint();
         }
 
-        public override int HasLasers()
+        public override string ToString()
         {
-            return BaseTile.HasLasers() + Number;
+            return BaseTile + "L" + Number;
         }
     }
 }

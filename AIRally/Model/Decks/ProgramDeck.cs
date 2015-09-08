@@ -5,13 +5,25 @@ namespace AIRally.Model.Decks
 {
     internal class ProgramDeck
     {
-        private readonly List<ProgramCard> programCards = new List<ProgramCard>();
-        private readonly List<ProgramCard> drawpile = new List<ProgramCard>();
         private static readonly Random Rng = new Random();
+        private readonly List<ProgramCard> drawpile = new List<ProgramCard>();
+        private readonly List<ProgramCard> programCards = new List<ProgramCard>();
 
         public ProgramDeck()
         {
             InitDeck();
+        }
+
+        public void BlockCard(ProgramCard blockCard)
+        {
+            blockCard.Blocked = true;
+        }
+
+        public ProgramCard Deal()
+        {
+            var dealCard = drawpile[0];
+            drawpile.RemoveAt(0);
+            return dealCard;
         }
 
         public void InitDeck()
@@ -27,7 +39,7 @@ namespace AIRally.Model.Decks
                 {
                     if (i <= 42)
                     {
-                        if (i % 2 != 0)
+                        if (i%2 != 0)
                         {
                             pca = ProgramCardAction.RotateLeft;
                         }
@@ -62,7 +74,7 @@ namespace AIRally.Model.Decks
                         }
                     }
                 }
-                programCards.Add(new ProgramCard(pca, i * 10));
+                programCards.Add(new ProgramCard(pca, i*10));
             }
         }
 
@@ -78,32 +90,26 @@ namespace AIRally.Model.Decks
                 }
             }
 
-            var n = drawpile.Count;
-            while (n > 1)
+            var times = Rng.Next(8) + 2;
+            var i = 0;
+            while (i < times)
             {
-                n--;
-                var k = Rng.Next(n + 1);
-                var helperCard = drawpile[k];
-                drawpile[k] = drawpile[n];
-                drawpile[n] = helperCard;
+                var n = drawpile.Count;
+                while (n > 1)
+                {
+                    n--;
+                    var k = Rng.Next(n + 1);
+                    var helperCard = drawpile[k];
+                    drawpile[k] = drawpile[n];
+                    drawpile[n] = helperCard;
+                }
+                i++;
             }
-        }
-
-        public void BlockCard(ProgramCard blockCard)
-        {
-            blockCard.Blocked = true;
         }
 
         public void UnblockCard(ProgramCard blockCard)
         {
             blockCard.Blocked = false;
-        }
-
-        public ProgramCard Deal()
-        {
-            var dealCard = drawpile[0];
-            drawpile.RemoveAt(0);
-            return dealCard;
         }
     }
 }

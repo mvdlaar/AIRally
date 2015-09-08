@@ -1,6 +1,6 @@
 ﻿namespace AIRallyPlayer
 {
-    partial class Form1
+    partial class frmMainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -34,6 +34,7 @@
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectAIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pbxBoard)).BeginInit();
             this.msAI.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +55,8 @@
             // msAI
             // 
             this.msAI.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.playToolStripMenuItem});
             this.msAI.Location = new System.Drawing.Point(0, 0);
             this.msAI.Name = "msAI";
             this.msAI.Size = new System.Drawing.Size(1039, 24);
@@ -93,7 +95,14 @@
             this.quitToolStripMenuItem.Text = "&Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
-            // Form1
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.playToolStripMenuItem.Text = "&Play";
+            this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
+            // 
+            // frmMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -101,8 +110,8 @@
             this.Controls.Add(this.pbxBoard);
             this.Controls.Add(this.msAI);
             this.MainMenuStrip = this.msAI;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "frmMainForm";
+            this.Text = "AI Rally";
             ((System.ComponentModel.ISupportInitialize)(this.pbxBoard)).EndInit();
             this.msAI.ResumeLayout(false);
             this.msAI.PerformLayout();
@@ -118,6 +127,7 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectAIsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
     }
 }
 

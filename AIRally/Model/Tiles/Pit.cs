@@ -9,9 +9,9 @@ namespace AIRally.Model.Tiles
         {
         }
 
-        public override string ToString()
+        public override bool IsPit()
         {
-            return "P";
+            return true;
         }
 
         public override Image Paint()
@@ -19,9 +19,9 @@ namespace AIRally.Model.Tiles
             return PaintMe("PitGeneric");
         }
 
-        public override bool IsPit()
+        public override string ToString()
         {
-            return true;
+            return "P";
         }
     }
 }

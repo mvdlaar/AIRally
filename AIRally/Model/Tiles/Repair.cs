@@ -9,9 +9,9 @@ namespace AIRally.Model.Tiles
         {
         }
 
-        public override string ToString()
+        public override bool HasRepair()
         {
-            return BaseTile + "R";
+            return true;
         }
 
         public override Image Paint()
@@ -19,9 +19,9 @@ namespace AIRally.Model.Tiles
             return PaintOn("Repair");
         }
 
-        public override bool HasRepair()
+        public override string ToString()
         {
-            return true;
+            return BaseTile + "R";
         }
     }
 }

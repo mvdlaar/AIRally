@@ -21,19 +21,9 @@ namespace AIRally.Model.Tiles
             }
         }
 
-        public override string ToString()
+        public override bool HasPusher()
         {
-            StringBuilder result = new StringBuilder();
-            result.Append(BaseTile);
-            result.Append('P');
-            for (int i = 0; i < 5; i++)
-            {
-                if (Turns[i])
-                {
-                    result.Append(i);
-                }
-            }
-            return result.ToString();
+            return true;
         }
 
         public override Image Paint()
@@ -41,9 +31,19 @@ namespace AIRally.Model.Tiles
             return BaseTile.Paint();
         }
 
-        public override bool HasPusher()
+        public override string ToString()
         {
-            return true;
+            var result = new StringBuilder();
+            result.Append(BaseTile);
+            result.Append('P');
+            for (var i = 0; i < 5; i++)
+            {
+                if (Turns[i])
+                {
+                    result.Append(i);
+                }
+            }
+            return result.ToString();
         }
     }
 }

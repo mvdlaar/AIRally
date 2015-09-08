@@ -7,36 +7,33 @@ namespace AIRally.Model
 {
     public class AI
     {
-        public string Name { get; }
-
-        private string location;
-
-        private int damage = 0;
-
-        public int Damage
-        {
-            get { return damage; }
-        }
-
-        public int Number { get; }
-
-        private int lives = 3;
-        public int X { get; set; }
-        public int Y { get; set; }
-        public List<ProgramCard> ProgramCards { get; }
-
-        /// <summary>
-        /// Registers index runs from 1 through 5
-        /// </summary>
-        public Registers Registers { get; }
-
         private bool isVirtual = false;
+        private int lives = 3;
+        private string location;
 
         public AI(int number)
         {
             Number = number;
             ProgramCards = new List<ProgramCard>();
+            Direction = TileDirection.Left;
+            Registers = new Registers();
         }
+
+        public int Damage { get; } = 0;
+        public bool Dead { get; private set; }
+        public TileDirection Direction { get; set; }
+        public string Name { get; }
+        public int Number { get; }
+        public List<ProgramCard> ProgramCards { get; }
+        //private Registers registers;
+
+        /// <summary>
+        ///     Registers index runs from 1 through 5
+        /// </summary>
+        public Registers Registers { get; }
+
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public Bitmap Paint()
         {
@@ -49,6 +46,19 @@ namespace AIRally.Model
                 myStream.Dispose();
             }
             return result;
+        }
+
+        internal void Die()
+        {
+            Dead = true;
+        }
+
+        internal void SelectCards()
+        {
+            for (var i = 0; i < 5; i++)
+            {
+                Registers[i] = ProgramCards[i];
+            }
         }
     }
 }

@@ -7,69 +7,6 @@ namespace AIRally.Model.Tiles
 {
     public abstract class Tile
     {
-        protected char GetConveyorDirectionChar(ConveyorDirection cd)
-        {
-            switch (cd)
-            {
-                case ConveyorDirection.Up:
-                    return 'U';
-
-                case ConveyorDirection.Right:
-                    return 'R';
-
-                case ConveyorDirection.Down:
-                    return 'D';
-
-                case ConveyorDirection.Left:
-                    return 'L';
-            }
-            return 'N';
-        }
-
-        protected char GetTurnDirectionChar(TurnDirection td)
-        {
-            switch (td)
-            {
-                case TurnDirection.Left:
-                    return 'L';
-
-                case TurnDirection.Right:
-                    return 'R';
-
-                case TurnDirection.Both:
-                    return 'B';
-            }
-            return 'N';
-        }
-
-        protected char GetWallDirectionChar(WallDirection wd)
-        {
-            switch (wd)
-            {
-                case WallDirection.Top:
-                    return 'T';
-
-                case WallDirection.Bottom:
-                    return 'B';
-
-                case WallDirection.Left:
-                    return 'L';
-
-                case WallDirection.Right:
-                    return 'R';
-            }
-            return 'N';
-        }
-
-        public abstract override string ToString();
-
-        public abstract Image Paint();
-
-        public int X { get; }
-        public int Y { get; }
-
-        public Board Board { get; }
-
         protected Tile(Board board, int x, int y)
         {
             X = x;
@@ -77,78 +14,9 @@ namespace AIRally.Model.Tiles
             Board = board;
         }
 
-        protected Image PaintMe(string resourceName)
-        {
-            Image result = null;
-            var myAssembly = Assembly.GetExecutingAssembly();
-            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF." + resourceName + ".EMF");
-            if (myStream != null)
-            {
-                result = new Bitmap(myStream);
-                myStream.Dispose();
-            }
-            return result;
-        }
-
-        private static ConveyorDirection GetConveyorDirection(char conveyorDirection)
-        {
-            switch (conveyorDirection)
-            {
-                case 'U':
-                    return ConveyorDirection.Up;
-
-                case 'L':
-                    return ConveyorDirection.Left;
-
-                case 'D':
-                    return ConveyorDirection.Down;
-
-                case 'R':
-                    return ConveyorDirection.Right;
-
-                default:
-                    return ConveyorDirection.None;
-            }
-        }
-
-        private static TurnDirection GetTurnDirection(char turnDirection)
-        {
-            switch (turnDirection)
-            {
-                case 'L':
-                    return TurnDirection.Left;
-
-                case 'R':
-                    return TurnDirection.Right;
-
-                case 'B':
-                    return TurnDirection.Both;
-
-                default:
-                    return TurnDirection.None;
-            }
-        }
-
-        private static WallDirection GetWallDirection(char wallDirection)
-        {
-            switch (wallDirection)
-            {
-                case 'T':
-                    return WallDirection.Top;
-
-                case 'L':
-                    return WallDirection.Left;
-
-                case 'B':
-                    return WallDirection.Bottom;
-
-                case 'R':
-                    return WallDirection.Right;
-
-                default:
-                    return WallDirection.None;
-            }
-        }
+        public Board Board { get; }
+        public int X { get; }
+        public int Y { get; }
 
         public static Tile MakeTile(Board board, string tileString, int x, int y)
         {
@@ -174,7 +42,7 @@ namespace AIRally.Model.Tiles
             while (i < tileString.Length)
             {
                 int number;
-                string turnString = "12345";
+                var turnString = "12345";
                 switch (tileString[i])
                 {
                     case 'C': // Conveyor Belt
@@ -208,7 +76,8 @@ namespace AIRally.Model.Tiles
                         break;
 
                     case 'P': // Pusher
-                        var turns = new bool[5]; ;
+                        var turns = new bool[5];
+                        ;
                         while (i < tileString.Length - 1 && turnString.Contains(tileString[i + 1].ToString()))
                         {
                             turns[Convert.ToInt32(tileString[++i].ToString()) - 1] = true;
@@ -237,14 +106,9 @@ namespace AIRally.Model.Tiles
             return result;
         }
 
-        public virtual int HasSpawnPoint()
+        public virtual AI HasAI()
         {
-            return 0;
-        }
-
-        public virtual bool HasRepair()
-        {
-            return false;
+            return Board.aiRally.AIs[X, Y];
         }
 
         public virtual int HasLasers()
@@ -252,9 +116,29 @@ namespace AIRally.Model.Tiles
             return 0;
         }
 
-        public virtual WallDirection[] HasWalls()
+        public virtual bool HasPusher()
         {
-            return new WallDirection[0];
+            return false;
+        }
+
+        public virtual bool HasRepair()
+        {
+            return false;
+        }
+
+        public virtual int HasSpawnPoint()
+        {
+            return 0;
+        }
+
+        public virtual bool HasWall(TileDirection direction)
+        {
+            return false;
+        }
+
+        public virtual TileDirection[] HasWalls()
+        {
+            return new TileDirection[0];
         }
 
         public virtual bool IsPit()
@@ -262,14 +146,135 @@ namespace AIRally.Model.Tiles
             return false;
         }
 
-        public virtual bool HasPusher()
+        public abstract Image Paint();
+
+        public abstract override string ToString();
+
+        protected static ConveyorDirection GetConveyorDirection(char conveyorDirection)
         {
-            return false;
+            switch (conveyorDirection)
+            {
+                case 'U':
+                    return ConveyorDirection.Up;
+
+                case 'L':
+                    return ConveyorDirection.Left;
+
+                case 'D':
+                    return ConveyorDirection.Down;
+
+                case 'R':
+                    return ConveyorDirection.Right;
+
+                default:
+                    return ConveyorDirection.None;
+            }
         }
 
-        public virtual AI HasAI()
+        protected static char GetConveyorDirectionChar(ConveyorDirection cd)
         {
-            return Board.aiRally.AIs[X, Y];
+            switch (cd)
+            {
+                case ConveyorDirection.Up:
+                    return 'U';
+
+                case ConveyorDirection.Right:
+                    return 'R';
+
+                case ConveyorDirection.Down:
+                    return 'D';
+
+                case ConveyorDirection.Left:
+                    return 'L';
+            }
+            return 'N';
+        }
+
+        protected static TurnDirection GetTurnDirection(char turnDirection)
+        {
+            switch (turnDirection)
+            {
+                case 'L':
+                    return TurnDirection.Left;
+
+                case 'R':
+                    return TurnDirection.Right;
+
+                case 'B':
+                    return TurnDirection.Both;
+
+                default:
+                    return TurnDirection.None;
+            }
+        }
+
+        protected static char GetTurnDirectionChar(TurnDirection td)
+        {
+            switch (td)
+            {
+                case TurnDirection.Left:
+                    return 'L';
+
+                case TurnDirection.Right:
+                    return 'R';
+
+                case TurnDirection.Both:
+                    return 'B';
+            }
+            return 'N';
+        }
+
+        protected static TileDirection GetWallDirection(char wallDirection)
+        {
+            switch (wallDirection)
+            {
+                case 'T':
+                    return TileDirection.Up;
+
+                case 'L':
+                    return TileDirection.Left;
+
+                case 'B':
+                    return TileDirection.Down;
+
+                case 'R':
+                    return TileDirection.Right;
+
+                default:
+                    return TileDirection.None;
+            }
+        }
+
+        protected static char GetWallDirectionChar(TileDirection wd)
+        {
+            switch (wd)
+            {
+                case TileDirection.Up:
+                    return 'T';
+
+                case TileDirection.Down:
+                    return 'B';
+
+                case TileDirection.Left:
+                    return 'L';
+
+                case TileDirection.Right:
+                    return 'R';
+            }
+            return 'N';
+        }
+
+        protected Image PaintMe(string resourceName)
+        {
+            Image result = null;
+            var myAssembly = Assembly.GetExecutingAssembly();
+            var myStream = myAssembly.GetManifestResourceStream("AIRally.EMF." + resourceName + ".EMF");
+            if (myStream != null)
+            {
+                result = new Bitmap(myStream);
+                myStream.Dispose();
+            }
+            return result;
         }
     }
 }

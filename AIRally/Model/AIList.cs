@@ -1,11 +1,12 @@
 ﻿using AIRally.Model.Boards;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace AIRally.Model
 {
     public class AIList : IEnumerable<AI>
     {
-        private List<AI> aiList;
+        private readonly List<AI> aiList;
 
         public AIList()
         {
@@ -21,8 +22,8 @@ namespace AIRally.Model
         {
             get
             {
-                int i = 0;
-                while (i < aiList.Count && aiList[i].X != x && aiList[i].Y != y)
+                var i = 0;
+                while (i < aiList.Count && !(aiList[i].X == x && aiList[i].Y == y))
                 {
                     i++;
                 }
@@ -30,11 +31,18 @@ namespace AIRally.Model
                 {
                     return this[i];
                 }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
+        }
+
+        public IEnumerator<AI> GetEnumerator()
+        {
+            return aiList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public AI Add(Board board, string name, string location)
@@ -49,16 +57,6 @@ namespace AIRally.Model
         public void Clear()
         {
             aiList.Clear();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public IEnumerator<AI> GetEnumerator()
-        {
-            return aiList.GetEnumerator();
         }
     }
 }

@@ -5,16 +5,16 @@ namespace AIRally.Model.Tiles
 {
     public class Flag : TileDecorator
     {
-        public int Number { get; }
-
         public Flag(Board board, Tile baseTile, int number, int x, int y) : base(board, baseTile, x, y)
         {
             Number = number;
         }
 
-        public override string ToString()
+        public int Number { get; }
+
+        public override bool HasRepair()
         {
-            return BaseTile + "F" + Number;
+            return true;
         }
 
         public override Image Paint()
@@ -22,9 +22,9 @@ namespace AIRally.Model.Tiles
             return PaintOn("Flag" + Number);
         }
 
-        public override bool HasRepair()
+        public override string ToString()
         {
-            return true;
+            return BaseTile + "F" + Number;
         }
     }
 }

@@ -10,6 +10,16 @@ namespace AIRallyPlayer
             InitializeComponent();
         }
 
+        public string AILocation
+        {
+            get { return tbLocation.Text; }
+        }
+
+        public string AIName
+        {
+            get { return tbName.Text; }
+        }
+
         private void btnOpenAIDialog_Click(object sender, EventArgs e)
         {
             FileDialog fd = new OpenFileDialog();
@@ -18,16 +28,6 @@ namespace AIRallyPlayer
             {
                 tbLocation.Text = fd.FileName;
             }
-        }
-
-        public string AIName
-        {
-            get { return tbName.Text; }
-        }
-
-        public string AILocation
-        {
-            get { return tbLocation.Text; }
         }
     }
 }
