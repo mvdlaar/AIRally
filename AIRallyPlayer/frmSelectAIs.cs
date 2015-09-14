@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace AIRallyPlayer
@@ -56,6 +58,16 @@ namespace AIRallyPlayer
 
         private void btnValidate_Click(object sender, EventArgs e)
         {
+            for (int i = 1; i <= 8; i++)
+            {
+                if (!String.IsNullOrEmpty(this[i].AILocation))
+                {
+                    if (!File.Exists(this[i].AILocation))
+                    {
+                        this[i].Clear();
+                    }
+                }
+            }
         }
     }
 }

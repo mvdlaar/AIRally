@@ -1,5 +1,5 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Runtime.Remoting.Messaging;
 
 namespace AIRally.Model.Tiles
 {
@@ -12,12 +12,17 @@ namespace AIRally.Model.Tiles
             BaseTile = baseTile;
         }
 
+        public override int HasFlag()
+        {
+            return BaseTile.HasFlag();
+        }
+
         public override int HasLasers()
         {
             return BaseTile.HasLasers();
         }
 
-        public override bool HasPusher()
+        public override Pusher HasPusher()
         {
             return BaseTile.HasPusher();
         }
@@ -58,6 +63,31 @@ namespace AIRally.Model.Tiles
                 g.Dispose();
             }
             return imageTile;
+        }
+
+        public override TurnDirection HasGear()
+        {
+            return BaseTile.HasGear();
+        }
+
+        public override void ActivateExpressConveyorBelt(AI ai)
+        {
+            BaseTile.ActivateConveyorBelt(ai);
+        }
+
+        public override void ActivateConveyorBelt(AI ai)
+        {
+            BaseTile.ActivateConveyorBelt(ai);
+        }
+
+        public override void ActivatePusher(AI ai, int turn)
+        {
+            BaseTile.ActivatePusher(ai, turn);
+        }
+
+        public override void ActivateGear(AI ai)
+        {
+            BaseTile.ActivateGear(ai);
         }
     }
 }

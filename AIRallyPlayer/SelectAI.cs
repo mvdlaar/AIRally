@@ -29,5 +29,11 @@ namespace AIRallyPlayer
                 tbLocation.Text = fd.FileName;
             }
         }
+
+        public void Clear()
+        {
+            tbLocation.Text = "";
+            tbName.Text = "";
+        }
     }
 }

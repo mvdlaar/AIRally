@@ -1,7 +1,8 @@
-﻿using AIRally.Model.Boards;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
 
 namespace AIRally.Model.Tiles
 {
@@ -46,13 +47,13 @@ namespace AIRally.Model.Tiles
                 switch (tileString[i])
                 {
                     case 'C': // Conveyor Belt
-                        result = new ConveyorBelt(board, result, GetConveyorDirection(tileString[++i]),
-                            GetTurnDirection(tileString[++i]), x, y);
+                        result = new ConveyorBelt(board, result, TileDirectionUtil.Get(tileString[++i]),
+                            TurnDirectionUtil.Get(tileString[++i]), x, y);
                         break;
 
                     case 'E': // Express Conveyor Belt
-                        result = new ExpressConveyorBelt(board, result, GetConveyorDirection(tileString[++i]),
-                            GetTurnDirection(tileString[++i]), x, y);
+                        result = new ExpressConveyorBelt(board, result, TileDirectionUtil.Get(tileString[++i]),
+                            TurnDirectionUtil.Get(tileString[++i]), x, y);
                         break;
 
                     case 'F': // Flag
@@ -64,7 +65,7 @@ namespace AIRally.Model.Tiles
                         break;
 
                     case 'G': // Gear
-                        result = new Gear(board, result, GetTurnDirection(tileString[++i]), x, y);
+                        result = new Gear(board, result, TurnDirectionUtil.Get(tileString[++i]), x, y);
                         break;
 
                     case 'L': // Laser
@@ -77,12 +78,12 @@ namespace AIRally.Model.Tiles
 
                     case 'P': // Pusher
                         var turns = new bool[5];
-                        ;
+                        var direction = TileDirectionUtil.Get(tileString[++i]);
                         while (i < tileString.Length - 1 && turnString.Contains(tileString[i + 1].ToString()))
                         {
                             turns[Convert.ToInt32(tileString[++i].ToString()) - 1] = true;
                         }
-                        result = new Pusher(board, result, turns, x, y);
+                        result = new Pusher(board, result, direction, turns, x, y);
                         break;
 
                     case 'R': // Repair
@@ -98,12 +99,17 @@ namespace AIRally.Model.Tiles
                         break;
 
                     case 'W': // Wall
-                        result = new Wall(board, result, GetWallDirection(tileString[++i]), x, y);
+                        result = new Wall(board, result, TileDirectionUtil.Get(tileString[++i]), x, y);
                         break;
                 }
                 i++;
             }
             return result;
+        }
+
+        public virtual int HasFlag()
+        {
+            return 0;
         }
 
         public virtual AI HasAI()
@@ -116,9 +122,9 @@ namespace AIRally.Model.Tiles
             return 0;
         }
 
-        public virtual bool HasPusher()
+        public virtual Pusher HasPusher()
         {
-            return false;
+            return null;
         }
 
         public virtual bool HasRepair()
@@ -136,6 +142,11 @@ namespace AIRally.Model.Tiles
             return false;
         }
 
+        public virtual TurnDirection HasGear()
+        {
+            return TurnDirection.None;
+        }
+
         public virtual TileDirection[] HasWalls()
         {
             return new TileDirection[0];
@@ -150,120 +161,6 @@ namespace AIRally.Model.Tiles
 
         public abstract override string ToString();
 
-        protected static ConveyorDirection GetConveyorDirection(char conveyorDirection)
-        {
-            switch (conveyorDirection)
-            {
-                case 'U':
-                    return ConveyorDirection.Up;
-
-                case 'L':
-                    return ConveyorDirection.Left;
-
-                case 'D':
-                    return ConveyorDirection.Down;
-
-                case 'R':
-                    return ConveyorDirection.Right;
-
-                default:
-                    return ConveyorDirection.None;
-            }
-        }
-
-        protected static char GetConveyorDirectionChar(ConveyorDirection cd)
-        {
-            switch (cd)
-            {
-                case ConveyorDirection.Up:
-                    return 'U';
-
-                case ConveyorDirection.Right:
-                    return 'R';
-
-                case ConveyorDirection.Down:
-                    return 'D';
-
-                case ConveyorDirection.Left:
-                    return 'L';
-            }
-            return 'N';
-        }
-
-        protected static TurnDirection GetTurnDirection(char turnDirection)
-        {
-            switch (turnDirection)
-            {
-                case 'L':
-                    return TurnDirection.Left;
-
-                case 'R':
-                    return TurnDirection.Right;
-
-                case 'B':
-                    return TurnDirection.Both;
-
-                default:
-                    return TurnDirection.None;
-            }
-        }
-
-        protected static char GetTurnDirectionChar(TurnDirection td)
-        {
-            switch (td)
-            {
-                case TurnDirection.Left:
-                    return 'L';
-
-                case TurnDirection.Right:
-                    return 'R';
-
-                case TurnDirection.Both:
-                    return 'B';
-            }
-            return 'N';
-        }
-
-        protected static TileDirection GetWallDirection(char wallDirection)
-        {
-            switch (wallDirection)
-            {
-                case 'T':
-                    return TileDirection.Up;
-
-                case 'L':
-                    return TileDirection.Left;
-
-                case 'B':
-                    return TileDirection.Down;
-
-                case 'R':
-                    return TileDirection.Right;
-
-                default:
-                    return TileDirection.None;
-            }
-        }
-
-        protected static char GetWallDirectionChar(TileDirection wd)
-        {
-            switch (wd)
-            {
-                case TileDirection.Up:
-                    return 'T';
-
-                case TileDirection.Down:
-                    return 'B';
-
-                case TileDirection.Left:
-                    return 'L';
-
-                case TileDirection.Right:
-                    return 'R';
-            }
-            return 'N';
-        }
-
         protected Image PaintMe(string resourceName)
         {
             Image result = null;
@@ -275,6 +172,26 @@ namespace AIRally.Model.Tiles
                 myStream.Dispose();
             }
             return result;
+        }
+
+        public virtual void ActivateExpressConveyorBelt(AI ai)
+        {
+            // Do nothing
+        }
+
+        public virtual void ActivateConveyorBelt(AI ai)
+        {
+            // Do nothing
+        }
+
+        public virtual void ActivatePusher(AI ai, int turn)
+        {
+            // Do nothing
+        }
+
+        public virtual void ActivateGear(AI ai)
+        {
+            // Do nothing
         }
     }
 }

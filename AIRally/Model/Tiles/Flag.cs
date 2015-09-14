@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {
@@ -11,6 +10,11 @@ namespace AIRally.Model.Tiles
         }
 
         public int Number { get; }
+
+        public override int HasFlag()
+        {
+            return Number;
+        }
 
         public override bool HasRepair()
         {

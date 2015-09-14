@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Text;
 
 namespace AIRally.Model.Tiles
@@ -57,7 +56,7 @@ namespace AIRally.Model.Tiles
         private string Postfix(string prefix)
         {
             var result = new StringBuilder(prefix);
-            result.Append(GetWallDirectionChar(Direction));
+            result.Append(TileDirectionUtil.GetChar(Direction));
             return result.ToString();
         }
     }

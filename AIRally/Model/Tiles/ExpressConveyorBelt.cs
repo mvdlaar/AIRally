@@ -1,24 +1,23 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Text;
 
 namespace AIRally.Model.Tiles
 {
     public class ExpressConveyorBelt : TileDecorator
     {
-        public ExpressConveyorBelt(Board board, Tile baseTile, ConveyorDirection direction, TurnDirection turn, int x,
+        public ExpressConveyorBelt(Board board, Tile baseTile, TileDirection direction, TurnDirection turn, int x,
             int y) : base(board, baseTile, x, y)
         {
             Direction = direction;
             Turn = turn;
         }
 
-        public ConveyorDirection Direction { get; }
+        public TileDirection Direction { get; }
         public TurnDirection Turn { get; }
 
         public override Image Paint()
         {
-            if (Direction != ConveyorDirection.None)
+            if (Direction != TileDirection.None)
             {
                 return PaintOn(Postfix("EBelt"));
             }
@@ -33,9 +32,19 @@ namespace AIRally.Model.Tiles
         private string Postfix(string prefix)
         {
             var result = new StringBuilder(prefix);
-            result.Append(GetConveyorDirectionChar(Direction));
-            result.Append(GetTurnDirectionChar(Turn));
+            result.Append(TileDirectionUtil.GetChar(Direction));
+            result.Append(TurnDirectionUtil.GetChar(Turn));
             return result.ToString();
+        }
+
+        public override void ActivateExpressConveyorBelt(AI ai)
+        {
+            Board.MoveAIOnce(ai, Direction);
+        }
+
+        public override void ActivateConveyorBelt(AI ai)
+        {
+            Board.MoveAIOnce(ai, Direction);
         }
     }
 }

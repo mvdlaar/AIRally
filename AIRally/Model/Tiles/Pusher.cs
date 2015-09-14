@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Text;
 
@@ -7,23 +6,26 @@ namespace AIRally.Model.Tiles
 {
     public class Pusher : TileDecorator
     {
-        public bool[] Turns;
+        public bool[] ActiveTurns { get; }
+        public TileDirection Direction { get; }
+    
 
-        public Pusher(Board board, Tile baseTile, bool[] turns, int x, int y) : base(board, baseTile, x, y)
+        public Pusher(Board board, Tile baseTile, TileDirection direction, bool[] activeTurns, int x, int y) : base(board, baseTile, x, y)
         {
-            if (turns.Length == 5)
+            if (activeTurns.Length == 5)
             {
-                Turns = turns;
+                Direction = direction;
+                ActiveTurns = activeTurns;
             }
             else
             {
-                throw new Exception("Pusher initialization error; Turns does not equal 5");
+                throw new Exception("Pusher initialization error; Length of ActiveTurns does not equal 5");
             }
         }
 
-        public override bool HasPusher()
+        public override Pusher HasPusher()
         {
-            return true;
+            return this;
         }
 
         public override Image Paint()
@@ -38,12 +40,20 @@ namespace AIRally.Model.Tiles
             result.Append('P');
             for (var i = 0; i < 5; i++)
             {
-                if (Turns[i])
+                if (ActiveTurns[i])
                 {
                     result.Append(i);
                 }
             }
             return result.ToString();
+        }
+
+        public override void ActivatePusher(AI ai, int turn)
+        {
+            if (ActiveTurns[turn])
+            {
+                Board.MoveAIOnce(ai, Direction);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace AIRally.Model.Tiles
 {

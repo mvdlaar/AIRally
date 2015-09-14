@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AIRally.Model.Boards
+namespace AIRally.Model
 {
     public class Board
     {
@@ -19,7 +19,9 @@ namespace AIRally.Model.Boards
         {
             Name = name;
             Tiles = new List<Tile>();
+            Flags = new List<Tile>();
             SpawnPoints = new List<Tile>();
+
             this.aiRally = aiRally;
 
             var lines = Regex.Split(boardString, "\r\n|\r|\n");
@@ -37,12 +39,17 @@ namespace AIRally.Model.Boards
                 {
                     currTile = Tile.MakeTile(this, tileRow[x], x, y);
                     Tiles.Add(currTile);
+                    if (currTile.HasFlag() != 0)
+                    {
+                        Flags.Add(currTile);
+                    }
                     if (currTile.HasSpawnPoint() != 0)
                     {
                         SpawnPoints.Add(currTile);
                     }
                 }
             }
+            Flags = Flags.OrderBy(o => o.HasFlag()).ToList();
             SpawnPoints = SpawnPoints.OrderBy(o => o.HasSpawnPoint()).ToList();
         }
 
@@ -54,6 +61,8 @@ namespace AIRally.Model.Boards
         public int Height { get; }
         public string Name { get; }
         public List<Tile> SpawnPoints { get; }
+
+        public List<Tile> Flags { get; }
         public List<Tile> Tiles { get; }
         public int Width { get; }
 
@@ -68,40 +77,49 @@ namespace AIRally.Model.Boards
             var tileWidth = width/Width;
             Image img;
 
-            Image imgBoard = new Bitmap(width, height);
-            var g = Graphics.FromImage(imgBoard);
-            g.Clear(SystemColors.AppWorkspace);
-            g.CompositingQuality = CompositingQuality.HighSpeed;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.CompositingMode = CompositingMode.SourceCopy;
-
-            for (var y = 0; y < Height; y++)
+            if (width > 0 && height > 0)
             {
-                for (var x = 0; x < Width; x++)
+
+                Image imgBoard = new Bitmap(width, height);
+                var g = Graphics.FromImage(imgBoard);
+                g.Clear(SystemColors.AppWorkspace);
+                g.CompositingQuality = CompositingQuality.HighSpeed;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.CompositingMode = CompositingMode.SourceCopy;
+
+                for (var y = 0; y < Height; y++)
                 {
-                    img = this[x, y].Paint();
+                    for (var x = 0; x < Width; x++)
+                    {
+                        img = this[x, y].Paint();
+                        if (img != null)
+                        {
+                            g.DrawImage(img, x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+                            img.Dispose();
+                        }
+                    }
+                }
+                g.Dispose();
+
+                g = Graphics.FromImage(imgBoard);
+                foreach (var ai in aiRally.AIs)
+                {
+                    img = ai.Paint();
+
                     if (img != null)
                     {
-                        g.DrawImage(img, x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+                        g.DrawImage(img, ai.X*tileWidth, ai.Y*tileHeight, tileWidth, tileHeight);
                         img.Dispose();
                     }
                 }
+                g.Dispose();
+                return imgBoard;
             }
-            g.Dispose();
-
-            g = Graphics.FromImage(imgBoard);
-            foreach (var ai in aiRally.AIs)
+            else
             {
-                img = ai.Paint();
-
-                if (img != null)
-                {
-                    g.DrawImage(img, ai.X*tileWidth, ai.Y*tileHeight, tileWidth, tileHeight);
-                    img.Dispose();
-                }
+                return null;
             }
-            g.Dispose();
-            return imgBoard;
+
         }
 
         public override string ToString()
@@ -175,7 +193,7 @@ namespace AIRally.Model.Boards
             return fileParts[0];
         }
 
-        private void MoveAIOnce(AI ai, TileDirection direction)
+        internal void MoveAIOnce(AI ai, TileDirection direction)
         {
             if (direction != TileDirection.None)
             {

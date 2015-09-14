@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace AIRally.Model
@@ -47,10 +46,11 @@ namespace AIRally.Model
 
         public AI Add(Board board, string name, string location)
         {
-            var ai = new AI(aiList.Count + 1);
-            aiList.Add(ai);
+            var ai = new AI(aiList.Count + 1, board, name, location);
             ai.X = board.SpawnPoints[ai.Number - 1].X;
             ai.Y = board.SpawnPoints[ai.Number - 1].Y;
+            ai.SetArchive();
+            aiList.Add(ai);
             return ai;
         }
 

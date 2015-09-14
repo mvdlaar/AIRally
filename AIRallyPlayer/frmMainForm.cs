@@ -22,8 +22,14 @@ namespace AIRallyPlayer
             {
                 boardLocation = fd.FileName;
                 airally = new AIRally.Model.AIRally(boardLocation);
+                airally.Changed += AirallyOnChanged;
                 RefreshBoard();
             }
+        }
+
+        private void AirallyOnChanged(object sender, EventArgs eventArgs)
+        {
+            RefreshBoard();
         }
 
         private void pbxBoard_SizeChanged(object sender, EventArgs e)
@@ -33,8 +39,20 @@ namespace AIRallyPlayer
 
         private void playToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            airally.PlayTurn();
-            RefreshBoard();
+            if (airally != null)
+            {
+                airally.PlayGame();
+                RefreshBoard();
+
+                if (airally.Winner != null)
+                {
+                    MessageBox.Show(airally.Winner.Name + " wins!","We have a winner", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    MessageBox.Show("Everyone loses", "No winner", MessageBoxButtons.OK);
+                }
+            }
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)

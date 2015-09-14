@@ -1,5 +1,4 @@
-﻿using AIRally.Model.Boards;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Text;
 
 namespace AIRally.Model.Tiles
@@ -34,8 +33,18 @@ namespace AIRally.Model.Tiles
         private string Postfix(string prefix)
         {
             var result = new StringBuilder(prefix);
-            result.Append(GetTurnDirectionChar(Turn));
+            result.Append(TurnDirectionUtil.GetChar(Turn));
             return result.ToString();
+        }
+
+        public override TurnDirection HasGear()
+        {
+            return Turn;
+        }
+
+        public override void ActivateGear(AI ai)
+        {
+            ai.Turn(Turn);
         }
     }
 }

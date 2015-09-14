@@ -1,17 +1,16 @@
 ﻿using AIRally.Model.Decks;
+using System;
 
 namespace AIRally.Model
 {
     public class Registers
     {
-        private readonly ProgramCard[] registers;
-
         public Registers()
         {
             registers = new ProgramCard[5];
-            for (var i = 0; i < registers.Length - 1; i++)
+            for (var i = 1; i <= 5; i++)
             {
-                registers[i] = null;
+                this[i] = null;
             }
         }
 
@@ -27,11 +26,24 @@ namespace AIRally.Model
             }
             set
             {
-                if (index >= 1 && index <= 5)
+                if (index >= 1 && index <= 5 && (value == null || Array.IndexOf(registers, value) == -1))
                 {
                     registers[index - 1] = value;
                 }
             }
         }
+
+        public void Wipe()
+        {
+            for (var i = 1; i <= 5; i++)
+            {
+                if (this[i] != null && !this[i].Blocked)
+                {
+                    this[i] = null;
+                }
+            }
+        }
+
+        private readonly ProgramCard[] registers;
     }
 }
