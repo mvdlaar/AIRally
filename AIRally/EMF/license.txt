@@ -1,4 +1,5 @@
-﻿The image files for tiles included are distributed CC BY SA NC.
+﻿The image files for tiles included are distributed CC BY SA NC
+https://creativecommons.org/licenses/by-nc-sa/3.0/.
 The image files are part of the RoboRally Editor found at 
 http://www.roborally-editor.net/
 Express rights were granted for inclusion in this project by 
