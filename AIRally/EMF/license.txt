@@ -1,0 +1,5 @@
+﻿The image files for tiles included are distributed CC BY SA NC.
+The image files are part of the RoboRally Editor found at 
+http://www.roborally-editor.net/
+Express rights were granted for inclusion in this project by 
+Norbert Langermann (norbert@langermann.net)
